@@ -1,68 +1,41 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
 
-In the project directory, you can run:
+### How to get here from zero?
 
-### `npm start`
-
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+1. Get started
+  1. `$ npx create-react-app my-app`
+  1. `$ cd my-app`
+  1. `$ npm start`
+1. Read [the create-react-app docs](https://facebook.github.io/create-react-app/docs/)
+1. Get ready for a more pleasant development experience
+  1. Install chalk: `$ npm i -s chalk`
+  1. Install Nodemon: `$ npm i -s nodemon`
+  1. Add `src/samples` folder to test new libraries and new concepts
+  1. Setup Babel for running individual files
+    1. See: https://babeljs.io/docs/en/babel-node
+    1. Add `.babelrc`
+      1. [reference config](https://github.com/Domiii/dbdi/blob/master/.babelrc)
+      1. `"presets": ["@babel/preset-env", "@babel/preset-react"]`
+      1. Install missing plugins: `$ npm i --save-dev @babel/plugin-proposal-decorators @babel/plugin-proposal-class-properties @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from`
+    1. `npm i --save-dev @babel/core @babel/node @babel/cli`
+    1. `npm i -s core-js@3`
+    1. Debug + wait initially: `babel-node --inspect-brk src/samples/someSample`
+    1. Using nodemon: `nodemon --exec babel-node --inspect src/samples/someSample`
+1. Setup firebase ([as explained in the docs](https://facebook.github.io/create-react-app/docs/deployment#firebase-https-firebasegooglecom))
+  1. `$ firebase init`
+  1. Change config accordingly
+  1. Add to `.gitignore`
+  1. Setup firebase + add firebase login: https://codepen.io/Domiii/pen/JwrZVr?editors=0010
+1. Add [react-router](https://github.com/reactjs/react-router-tutorial/tree/master/lessons/01-setting-up)
+  1. `$ npm i -s react-router react-router-dom`
+  1. [Article: Getting started with React Router](https://codeburst.io/getting-started-with-react-router-5c978f70df91)
+  1. TODO
+1. Add external data and remote API logic
+  1. Add `api`, `api/index.js` and `api/firebaseInit.js`
+  1. TODO
+1. Add Google login
+  1. TODO
+1. Add [Unstated](https://github.com/jamiebuilds/unstated)
+  1. [unstated — The setState of React State Management](https://medium.com/react-native-training/unstated-the-setstate-of-react-state-management-8ce47b240e6d)
+  1. TODO

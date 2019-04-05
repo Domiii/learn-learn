@@ -1,0 +1,1 @@
+import firebaseInit from './firebaseInit';

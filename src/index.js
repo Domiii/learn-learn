@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import chalk from 'chalk';
+
+// setup chalk
+
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
