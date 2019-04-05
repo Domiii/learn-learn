@@ -1,18 +1,41 @@
 import React from 'react';
 
-import { login } from 'src/api/auth';
+import Button from '@material-ui/core/Button';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+
+import { login } from 'api/auth';
+import { blueGrey, red, purple } from '@material-ui/core/colors';
+
+
+const theme = createMuiTheme({
+  palette: {
+    primary: blueGrey,
+    secondary: purple,
+    error: red,
+  },
+});
+
 
 export default function Login() {
   return (
-    <>
-      {/* <button id="sign-out" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
-        Sign-out
-      </button> */}
-      <button
-        onClick={login}
-        class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-color-text--white">
-        <i class="material-icons">account_circle</i>Sign-in with Google
-      </button>
-    </>
+    <div className="full-center">
+
+      <MuiThemeProvider theme={theme}>
+        <Button
+          aria-haspopup="true"
+          variant="contained"
+          color="primary"
+          onClick={login}
+        >
+          <span className="font-size-2">
+            <img className="size-1"
+              alt="GoogleLogo"
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+            {" "}Sign-in with Google
+          </span>
+        </Button>
+      </MuiThemeProvider>
+    </div>
   );
 }

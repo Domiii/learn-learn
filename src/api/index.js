@@ -1,1 +1,1 @@
-import firebaseInit from './firebaseInit';
+import firebase from './firebase';

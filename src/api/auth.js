@@ -1,8 +1,12 @@
-import firebase from 'firebase';
+import firebase from './firebase';
+import Firebase from 'firebase/app';
 
+export async function onAuthStateChanged(fn) {
+  return firebase.auth().onAuthStateChanged(fn);
+}
 
 export async function login() {
-  var provider = new firebase.auth.GoogleAuthProvider();
+  var provider = new Firebase.auth.GoogleAuthProvider();
   //provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 
   try {
@@ -16,3 +20,10 @@ export async function login() {
     console.error('login error:', err);
   }
 }
+
+
+export async function logout() {
+  return firebase.auth().signOut();
+}
+
+export default firebase.auth();
