@@ -14,6 +14,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
   1. Install chalk: `$ npm i -s chalk`
   1. Install Nodemon: `$ npm i -s nodemon`
   1. Configure eslint: https://www.npmjs.com/package/eslint-config-react-app
+  1. Adding custom folder aliases: (a) add to webpack and also (b) add to `package.json`'s `jest.`[`moduleNameMapper`](https://alexjover.com/blog/enhance-jest-configuration-with-module-aliases/)
   1. Add `src/samples` folder to test new libraries and new concepts
   1. Setup Babel for running individual files
     1. See: https://babeljs.io/docs/en/babel-node

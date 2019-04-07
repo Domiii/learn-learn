@@ -66,7 +66,8 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "test1": "babel-node --inspect-brk src/samples/test1"
+    "sample-debug": "babel-node --inspect-brk src/samples/$s",
+    "sample": "babel-node src/samples/$s"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -119,7 +120,14 @@
     ],
     "moduleNameMapper": {
       "^react-native$": "react-native-web",
-      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
+      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
+
+      "^src/(.*)$": "<rootDir>/src/$1",
+      "^api/(.*)$": "<rootDir>/src/api/$1",
+      "^state/(.*)$": "<rootDir>/src/api/state/$1",
+      "^connect$": "<rootDir>/src/api/unstated-connect/connect",
+      "^components/(.*)$": "<rootDir>/src/components/$1",
+      "^pages/(.*)$": "<rootDir>/src/pages/$1"
     },
     "moduleFileExtensions": [
       "web.js",

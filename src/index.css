@@ -17,6 +17,11 @@ code {
     monospace;
 }
 
+a[role="button"]:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
 
 .size-1 {
   width: 1em;

@@ -269,8 +269,8 @@ module.exports = function(webpackEnv) {
         // useful aliases
         'src': path.resolve(__dirname, '../src'),
         'api': path.resolve(__dirname, '../src/api'),
-        'containers': path.resolve(__dirname, '../src/api/containers'),
-        'connect': path.resolve(__dirname, '../src/api/connect'),
+        'state': path.resolve(__dirname, '../src/api/state'),
+        'connect': path.resolve(__dirname, '../src/api/unstated-connect/connect'),
         'components': path.resolve(__dirname, '../src/components'),
         'pages': path.resolve(__dirname, '../src/pages'),
       },

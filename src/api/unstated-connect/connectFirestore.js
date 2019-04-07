@@ -7,10 +7,12 @@ import { Subscribe, Container } from 'unstated';
 import zipObject from 'lodash/zipObject';
 import isPlainObject from 'lodash/isPlainObject';
 
+import FS, { addFirestoreContainers } from './FirestoreContainers';
+
 /**
- * Connect hoc for Unstated (similar to Redux's connect)
+ * HOC decorator for Unstated (behaving similar to Redux's connect).
  */
-export default function unstatedConnect(...input) {
+export default function unstatedConnectFirestore(...input) {
   const C = Container;
   let ContainerTypes;
   let ContainerNames;
@@ -28,7 +30,7 @@ export default function unstatedConnect(...input) {
     throw new Error('Invalid unstatedConnect call: Arguments must be Containers or a single object');
   }
 
-  return function wrapper(WrappedComponent) {
+  return function unstatedConnectWrapper(WrappedComponent) {
     return class ContainersProvider extends React.Component {
       doRender = (...containers) => {
         const containerProps = zipObject(ContainerNames, containers);
@@ -43,10 +45,50 @@ export default function unstatedConnect(...input) {
             {this.doRender}
           </Subscribe>
         );
-
       }
-
     }
   };
+}
 
+
+
+// how to use it:
+
+addFirestoreContainers({
+  Posts: {
+    queries: {
+      idsOfUser(db, { uid }) {
+        return db.collection('postIdsByUser').doc(uid);
+      },
+
+      byId(db, { postId }) {
+        return db.collection('posts').doc(postId);
+      }
+    },
+
+    readers: {
+      ofUser({ uid }, { posts: { idsOfUser, byId } }) {
+        return idsOfUser({ uid }).map(postId => byId({ postId }));
+      }
+    },
+
+    writers: {
+
+    }
+  }
+});
+
+
+@unstatedConnectFirestore(FS.Users, FS.Posts.count)
+@unstatedConnectFirestore({ uid: FS.Users.uid })
+class MyComponent extends Component {
+  render() {
+    const { uid, users, posts: { count: postCount } } = this.props;
+
+    return (<pre>{
+      `uid: ${uid}
+users: ${users.all}
+posts: ${postCount}`
+    }</pre>);
+  }
 }

@@ -19,8 +19,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 
 import connect from 'connect';
-import CurrentUser from 'containers/CurrentUser';
+import CurrentUser from 'state/CurrentUser';
 import { logout } from 'api/auth';
+
+
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+
+import { login } from 'api/auth';
+import { blueGrey, red, white } from '@material-ui/core/colors';
 
 const styles = {
   root: {
@@ -34,6 +40,14 @@ const styles = {
     marginRight: 20
   },
 };
+
+const theme = createMuiTheme({
+  palette: {
+    //primary: blueGrey,
+    secondary: white,
+    //error: red,
+  },
+});
 
 @connect(CurrentUser)
 class MenuAppBar extends React.Component {
@@ -57,13 +71,14 @@ class MenuAppBar extends React.Component {
 
     return (
       <div className={classes.root}>
+      {/* <MuiThemeProvider theme={theme}> */}
         <AppBar position="static">
           <Toolbar>
             <Button className={classes.menuButton} color="inherit"
               component={Link} to="/">
-              <Typography className={classes.title} variant="h6" color="inherit" noWrap>
+              {/* <Typography className={classes.title}  color="secondary" variant="title" noWrap> */}
                 Learn-learn
-              </Typography>
+              {/* </Typography> */}
             </Button>
             <div className={classes.grow} />
             {currentUser.value && (
@@ -98,6 +113,7 @@ class MenuAppBar extends React.Component {
             )}
           </Toolbar>
         </AppBar>
+      {/* </MuiThemeProvider> */}
       </div>
     );
   }

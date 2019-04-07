@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom'
 
 import connect from 'connect';
-import CurrentUser from 'containers/CurrentUser';
+import CurrentUser from 'state/CurrentUser';
 
 import Home from './pages/Home';
 import Login from './pages/Login';

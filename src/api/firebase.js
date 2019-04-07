@@ -15,5 +15,18 @@ var config = {
   messagingSenderId: "249308200308"
 };
 
+/**
+ * See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis
+ */
+var getGlobal = function () { 
+  if (typeof window !== 'undefined') { return window; } 
+  if (typeof global !== 'undefined') { return global; } 
+  throw new Error('unable to locate global object'); 
+}; 
 
-export default firebase.initializeApp(config);
+
+const app = firebase.initializeApp(config);
+getGlobal().firebase = app;
+
+export const fs = app.firestore();
+export default app;
