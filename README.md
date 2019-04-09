@@ -58,6 +58,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     * https://glitch.com/edit/#!/markdown-test
 
 ## Features?
+1. User list + management
 1. Cohorts
 1. Make + keep a list of notes
 1. Personalized checklists
