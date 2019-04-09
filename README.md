@@ -49,3 +49,15 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 1. Add [Unstated](https://github.com/jamiebuilds/unstated)
     1. [unstated — The setState of React State Management](https://medium.com/react-native-training/unstated-the-setstate-of-react-state-management-8ce47b240e6d)
     1. TODO
+
+
+## Basics
+1. Display a list of things
+1. Read, edit and display markdown
+    * https://github.com/rexxars/react-markdown
+    * https://glitch.com/edit/#!/markdown-test
+
+## Features?
+1. Cohorts
+1. Make + keep a list of notes
+1. Personalized checklists
