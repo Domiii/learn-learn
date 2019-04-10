@@ -17,10 +17,13 @@ ReactDOM.render(<Splash />, document.getElementById('root'));
 let rendered = false;
 
 onAuthStateChanged(user => {
-  if (!rendered) {
-    rendered = true;
-    ReactDOM.render(<App />, document.getElementById('root'));
-  }
+  //console.log('onAuthStateChanged', user);
+  setTimeout(() => {
+    if (!rendered) {
+      rendered = true;
+      ReactDOM.render(<App />, document.getElementById('root'));
+    }
+  });
 });
 
 // If you want your app to work offline and load faster, you can change

@@ -29,4 +29,5 @@ const app = firebase.initializeApp(config);
 getGlobal().firebase = app;
 
 export const fs = app.firestore();
+export const db = fs;
 export default app;

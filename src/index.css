@@ -26,6 +26,13 @@ a[role="button"]:hover {
 .size-1 {
   width: 1em;
 }
+.size-15 {
+  width: 1.5em;
+}
+.size-2 {
+  width: 2em;
+}
+
 
 .full-height {
   height: 100%;
