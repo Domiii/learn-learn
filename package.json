@@ -38,6 +38,7 @@
     "jest-watch-typeahead": "^0.2.1",
     "lodash": "^4.17.11",
     "mini-css-extract-plugin": "0.5.0",
+    "moment": "^2.24.0",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "pnp-webpack-plugin": "1.2.1",
     "postcss-flexbugs-fixes": "4.1.0",
@@ -48,6 +49,7 @@
     "react-app-polyfill": "^0.2.2",
     "react-dev-utils": "^8.0.0",
     "react-dom": "^16.8.6",
+    "react-moment": "^0.8.4",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
     "reactstrap": "^8.0.0",
@@ -121,11 +123,11 @@
     "moduleNameMapper": {
       "^react-native$": "react-native-web",
       "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
-
       "^src/(.*)$": "<rootDir>/src/$1",
       "^api/(.*)$": "<rootDir>/src/api/$1",
       "^state/(.*)$": "<rootDir>/src/api/state/$1",
       "^connect$": "<rootDir>/src/api/unstated-connect/connect",
+      "^NotLoaded$": "<rootDir>/src/api/unstated-connect/NotLoaded",
       "^components/(.*)$": "<rootDir>/src/components/$1",
       "^pages/(.*)$": "<rootDir>/src/pages/$1"
     },

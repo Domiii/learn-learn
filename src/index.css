@@ -23,6 +23,11 @@ a[role="button"]:hover {
 }
 
 
+
+.size-inherit {
+  width: inherit;
+  height: inherit; 
+}
 .size-1 {
   width: 1em;
 }
@@ -36,6 +41,9 @@ a[role="button"]:hover {
 
 .full-height {
   height: 100%;
+}
+.full-width {
+  width: 100%;
 }
 
 .view-centered {
@@ -56,4 +64,14 @@ a[role="button"]:hover {
   
 .font-size-2 {
   font-size: 2em;
+}
+
+
+/* see: https://stackoverflow.com/a/27732769 */
+.divider-vertical {
+  height: 20px;                   /* any height */
+  color: white;
+  border-left: 1px solid gray;     /* right or left is the same */
+  opacity: inherit;                    /* optional */
+  margin-right: 15px;                  /* optional */
 }

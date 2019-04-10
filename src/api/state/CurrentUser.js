@@ -1,20 +1,12 @@
+import Firebase from 'firebase/app';
 import { db } from 'api/firebase';
+import RoleId from 'api/roles';
 import auth, { onAuthStateChanged } from '../auth';
 
-import eq from 'lodash/eq';
+import isEqual from 'lodash/isEqual';
 
 import { Container } from 'unstated';
 
-function selectPublic(data) {
-  const {
-    displayName,
-    photoURL
-  } = data;
-  return {
-    displayName,
-    photoURL
-  };
-}
 function selectPrivate(data) {
   const {
     email
@@ -23,28 +15,72 @@ function selectPrivate(data) {
     email
   };
 }
+function selectPublic(data) {
+  const {
+    displayName,
+    photoURL,
+    // role,
+    // displayRole
+  } = data;
+  return {
+    displayName,
+    photoURL,
+    // role: role || null,
+    // displayRole: displayRole || null
+  };
+}
+
+function needsUpdate(snap, current, sel) {
+  //return !snap.exists || !isEqual(priv, sel(snapData));
+  return !snap.exists;
+}
 
 export default class CurrentUser extends Container {
-  state = {};
+  state = {
+    setDisplayRole: displayRole => {
+      if (!this.state.value || displayRole > this.state.role) {
+        return;
+      }
+      db.collection('usersPublic').doc(this.state.value.uid).update({
+        displayRole
+      });
+    }
+  };
 
   _onUser = user => {
     if (user) {
       db.collection('usersPrivate').doc(user.uid).onSnapshot(snap => {
         const priv = selectPrivate(user);
-        if (!snap.exists || !eq(priv, selectPrivate(snap.data()))) {
+        const snapData = snap.data() || {};
+        if (needsUpdate(snap, priv, selectPrivate)) {
           // update private user data
-          db.collection('usersPrivate').doc(user.uid).set(priv);
+          const obj = priv;
+          obj.updatedAt = Firebase.firestore.FieldValue.serverTimestamp();
+          if (!snap.exists) {
+            obj.createdAt = Firebase.firestore.FieldValue.serverTimestamp();
+          }
+          db.collection('usersPrivate').doc(user.uid).set(obj, {merge: true});
         }
-        this.setState({private: snap.data()});
+        this.setState(snapData);
       });
 
       db.collection('usersPublic').doc(user.uid).onSnapshot(snap => {
         const pub = selectPublic(user);
-        if (!snap.exists || !eq(pub, selectPublic(snap.data()))) {
+        const snapData = snap.data() || {};
+        if (needsUpdate(snap, pub, selectPublic)) {
           // update public user data
-          db.collection('usersPublic').doc(user.uid).set(pub);
+          debugger;
+          const obj = pub;
+          obj.updatedAt = Firebase.firestore.FieldValue.serverTimestamp();
+          if (!snap.exists) {
+            obj.createdAt = Firebase.firestore.FieldValue.serverTimestamp();
+          }
+          db.collection('usersPublic').doc(user.uid).set(obj, {merge: true});
         }
-        this.setState({public: snap.data()});
+        if (!snapData.displayRole) {
+          snapData.displayRole = RoleId.Guest;
+        }
+        this.setState(snapData);
       });
     }
   };

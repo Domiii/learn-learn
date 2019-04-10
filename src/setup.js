@@ -16,6 +16,8 @@ import './api';
 // ########################################################
 const consoleError = console.error;
 
-console.error = (...args) => {
-  consoleError(...args.map(a => chalk.red(a)));
-};
+(function() {
+  console.error = (...args) => {
+    consoleError(...args.map(a => chalk.red(a)));
+  };
+})();

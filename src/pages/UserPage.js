@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
+import Moment from 'react-moment';
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
-import ImageIcon from '@material-ui/icons/Image';
-import WorkIcon from '@material-ui/icons/Work';
-import BeachAccessIcon from '@material-ui/icons/BeachAccess';
+import Switch from '@material-ui/core/Switch';
+
+import Loading from 'components/Loading';
 
 import connect from 'connect';
-import UserProfiles from 'api/state/UserProfiles';
+import Users from 'api/state/Users';
+
+import { getRoleName, hasRole, RoleId } from 'api/roles';
 
 const styles = theme => ({
   root: {
     width: '100%',
-    maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
   },
 
@@ -27,26 +30,58 @@ const styles = theme => ({
 });
 
 
+@connect(Users)
+class UserAdminToggle extends Component {
+  onChangePrivs = () => {
+    const { uid, role, users } = this.props;
+    users.setRole(uid, role >= RoleId.Admin ? RoleId.User : RoleId.Admin);
+  };
+
+  render() {
+    const { role } = this.props;
+    return (<Switch
+      onChange={this.onChangePrivs}
+      checked={hasRole(role, 'Admin')}
+    />);
+  }
+}
+
 @withStyles(styles)
-@connect(UserProfiles)
+@connect(Users)
 class UsersList extends Component {
+  onChangePrivs = (evt) => {
+    console.log(evt);
+  };
+
   render() {
     const s = this.props.classes;
+    const { allUsers } = this.props.users;
+
+    if (!allUsers) {
+      return (<Loading centered />);
+    }
+
+
     return (
       <List className={s.root}>
-        <ListItem>
+        {allUsers.map(user => (<ListItem key={user.uid}>
           <Avatar>
-            <img className={s.ava} src="" alt="" />
+            <img className={s.ava} src={user.photoURL} alt="" />
           </Avatar>
-          <ListItemText primary="Photos" secondary="Jan 9, 2014" />
-        </ListItem>
+          {/* <Moment date={user.createdAt.toDate()} /> */}
+          <ListItemText primary={user.displayName}
+            secondary={getRoleName(user.displayRole)} />
+          <ListItemSecondaryAction>
+            <UserAdminToggle {...user} />
+          </ListItemSecondaryAction>
+        </ListItem>))}
       </List>
     );
   }
 }
 
 export default function UserPage() {
-  return (<div>
+  return (<div className="full-width">
     <UsersList />
   </div>);
 }

@@ -3,11 +3,16 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 
 import connect from 'connect';
 import CurrentUser from 'state/CurrentUser';
+import NotLoaded from 'NotLoaded';
+
+import RoleId from 'api/roles';
 
 import Home from './pages/Home';
 import UserPage from './pages/UserPage';
 import Login from './pages/Login';
 import NotFound404 from './pages/NotFound404';
+
+import Loading from 'components/Loading';
 
 @connect({ _currentUser: CurrentUser })
 class UserRoute extends Component {
@@ -50,7 +55,10 @@ class AdminRoute extends Component {
   route = (props) => {
     const { Comp, _currentUser, ...otherProps } = this.props;
     //console.log('AdminRoute', Comp.name);
-    return _currentUser.value ?
+    if (_currentUser.displayRole === NotLoaded) {
+      return (<Loading centered />);
+    }
+    return _currentUser.displayRole >= RoleId.Admin ?
       <Comp {...props} /> :
       <Redirect to='/' />;
   };

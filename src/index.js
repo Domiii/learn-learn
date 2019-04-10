@@ -6,13 +6,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import * as serviceWorker from './serviceWorker';
 
 import App from './App';
-import Splash from 'components/splash';
+import Loading from 'components/Loading';
 
 
 import { onAuthStateChanged } from 'api/auth';
 
 
-ReactDOM.render(<Splash />, document.getElementById('root'));
+ReactDOM.render(<Loading centered />, document.getElementById('root'));
 
 let rendered = false;
 

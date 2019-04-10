@@ -271,6 +271,7 @@ module.exports = function(webpackEnv) {
         'api': path.resolve(__dirname, '../src/api'),
         'state': path.resolve(__dirname, '../src/api/state'),
         'connect': path.resolve(__dirname, '../src/api/unstated-connect/connect'),
+        'NotLoaded': path.resolve(__dirname, '../src/api/unstated-connect/NotLoaded'),
         'components': path.resolve(__dirname, '../src/components'),
         'pages': path.resolve(__dirname, '../src/pages'),
       },

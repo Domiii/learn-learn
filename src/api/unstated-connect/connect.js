@@ -31,7 +31,7 @@ export default function unstatedConnect(...input) {
   return function unstatedConnectWrapper(WrappedComponent) {
     return class ContainersProvider extends React.Component {
       doRender = (...containers) => {
-        const containerProps = zipObject(ContainerNames, containers);
+        const containerProps = zipObject(ContainerNames, containers.map(c => c.state));
         return (
           <WrappedComponent {...containerProps} {...this.props} />
         );
