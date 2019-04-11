@@ -1,0 +1,77 @@
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+a[role="button"]:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+
+
+.size-inherit {
+  width: inherit;
+  height: inherit; 
+}
+.size-1 {
+  width: 1em;
+}
+.size-15 {
+  width: 1.5em;
+}
+.size-2 {
+  width: 2em;
+}
+
+
+.full-height {
+  height: 100%;
+}
+.full-width {
+  width: 100%;
+}
+
+.view-centered {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.full-center {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+  
+.font-size-2 {
+  font-size: 2em;
+}
+
+
+/* see: https://stackoverflow.com/a/27732769 */
+.divider-vertical {
+  height: 20px;                   /* any height */
+  color: white;
+  border-left: 1px solid gray;     /* right or left is the same */
+  opacity: inherit;                    /* optional */
+  margin-right: 15px;                  /* optional */
+}
