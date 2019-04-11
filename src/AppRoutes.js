@@ -19,7 +19,7 @@ class UserRoute extends Component {
   route = (props) => {
     const { Comp, _currentUser, ...otherProps } = this.props;
     //console.log('UserRoute', Comp.name);
-    return _currentUser ?
+    return _currentUser.uid ?
       <Comp {...props} /> :
       <Redirect to='/login' />;
   };
@@ -37,7 +37,7 @@ class NoUserRoute extends Component {
   route = (props) => {
     const { Comp, _currentUser, ...otherProps } = this.props;
     //console.log('NoUserRoute', Comp.name);
-    return !_currentUser ?
+    return !_currentUser.uid ?
       <Comp {...props} /> :
       <Redirect to='/' />;
   };
