@@ -37,11 +37,12 @@ function needsUpdate(snap, current, sel) {
 
 export default class CurrentUser extends Container {
   state = {
+    ...auth.currentUser,
     setDisplayRole: displayRole => {
-      if (!this.state.value || displayRole > this.state.role) {
+      if (!(displayRole <= this.state.role)) {
         return;
       }
-      db.collection('usersPublic').doc(this.state.value.uid).update({
+      db.collection('usersPublic').doc(this.state.uid).update({
         displayRole
       });
     }
@@ -69,7 +70,7 @@ export default class CurrentUser extends Container {
         const snapData = snap.data() || {};
         if (needsUpdate(snap, pub, selectPublic)) {
           // update public user data
-          debugger;
+          //debugger;
           const obj = pub;
           obj.updatedAt = Firebase.firestore.FieldValue.serverTimestamp();
           if (!snap.exists) {
@@ -88,16 +89,11 @@ export default class CurrentUser extends Container {
   constructor() {
     super();
 
-    //console.log('CurrentUser', auth.currentUser);
-    this.state.value = auth.currentUser;
+    //console.log('CurrentUser', this.state);
     onAuthStateChanged(user => {
       this._onUser(user);
       //console.log('onAuthStateChanged CurrentUser', user);
-      this.setState({ value: user });
+      this.setState(user);
     });
-  }
-
-  get value() {
-    return this.state.value;
   }
 }

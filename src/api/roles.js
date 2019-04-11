@@ -19,7 +19,7 @@ export function getRoleName(roleId) {
 
 export function hasRole(role, referenceRoleOrName) {
   if (isString(referenceRoleOrName)) {
-    if (!RoleId[referenceRoleOrName]) {
+    if (!RoleId.hasOwnProperty(referenceRoleOrName)) {
       throw new Error('invalid role name: ' + referenceRoleOrName);
     }
     //console.log(role, RoleId[referenceRoleOrName], role >= RoleId[referenceRoleOrName]);

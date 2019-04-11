@@ -10,10 +10,13 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Avatar from '@material-ui/core/Avatar';
 import Switch from '@material-ui/core/Switch';
 
+import { Button, ButtonGroup } from 'reactstrap';
+
 import Loading from 'components/Loading';
 
 import connect from 'connect';
-import Users from 'api/state/Users';
+import CurrentUser from 'state/CurrentUser';
+import Users from 'state/Users';
 
 import { getRoleName, hasRole, RoleId } from 'api/roles';
 
@@ -30,19 +33,24 @@ const styles = theme => ({
 });
 
 
-@connect(Users)
-class UserAdminToggle extends Component {
-  onChangePrivs = () => {
-    const { uid, role, users } = this.props;
-    users.setRole(uid, role >= RoleId.Admin ? RoleId.User : RoleId.Admin);
+@connect(Users, CurrentUser)
+class UserPrivBtn extends Component {
+  onClick = () => {
+    const { currentUser,uid, users, priv } = this.props;
+    if (currentUser.uid === uid) return;
+
+    users.setRole(uid, RoleId[priv]);
   };
 
   render() {
-    const { role } = this.props;
-    return (<Switch
-      onChange={this.onChangePrivs}
-      checked={hasRole(role, 'Admin')}
-    />);
+    const { currentUser, uid, role, children, priv } = this.props;
+    const has = hasRole(role, priv);
+    return (<Button
+      color={has && 'success' || 'danger'}
+      active={has}
+      disabled={currentUser.uid === uid}
+      onClick={this.onClick}
+    >{children}</Button>);
   }
 }
 
@@ -61,7 +69,6 @@ class UsersList extends Component {
       return (<Loading centered />);
     }
 
-
     return (
       <List className={s.root}>
         {allUsers.map(user => (<ListItem key={user.uid}>
@@ -72,7 +79,11 @@ class UsersList extends Component {
           <ListItemText primary={user.displayName}
             secondary={getRoleName(user.displayRole)} />
           <ListItemSecondaryAction>
-            <UserAdminToggle {...user} />
+            <ButtonGroup>
+              <UserPrivBtn priv="Guest" {...user}>Guest</UserPrivBtn>
+              <UserPrivBtn priv="User" {...user}>User</UserPrivBtn>
+              <UserPrivBtn priv="Admin" {...user}>Admin</UserPrivBtn>
+            </ButtonGroup>
           </ListItemSecondaryAction>
         </ListItem>))}
       </List>

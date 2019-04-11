@@ -135,7 +135,7 @@ class MenuAppBar extends React.Component {
             </Button>
             <AdminPages />
             <div className={classes.grow} />
-            {currentUser.value && (
+            {currentUser && (
               <div>
                 <AdminTools />
                 <IconButton
@@ -145,7 +145,7 @@ class MenuAppBar extends React.Component {
                   color="inherit"
                 >
                   <img className="size-15 rounded-circle" alt="account"
-                    src={currentUser.value.photoURL} />
+                    src={currentUser.photoURL} />
                 </IconButton>
                 <Menu
                   id="menu-appbar"
