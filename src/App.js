@@ -9,19 +9,34 @@ import './App.css';
 import AppRoutes from './AppRoutes';
 import Navbar from 'components/navbar';
 
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+
+import { blue, pink, red, green } from '@material-ui/core/colors';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: blue,
+    secondary: pink,
+    success: green,
+    danger: red
+  }
+});
+
 class App extends Component {
   render() {
     return (
       <Provider>
         <BrowserRouter>
-          <Container className="app-cont">
-            <div className="app-nav">
-              <Navbar />
-            </div>
-            <div className="app-main">
-              <AppRoutes />
-            </div>
-          </Container>
+          <MuiThemeProvider theme={theme}>
+            <Container className="app-cont no-padding">
+              <div className="app-nav">
+                <Navbar />
+              </div>
+              <div className="app-main">
+                <AppRoutes />
+              </div>
+            </Container>
+          </MuiThemeProvider>
         </BrowserRouter>
       </Provider>
     );

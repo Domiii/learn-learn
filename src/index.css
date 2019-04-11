@@ -75,3 +75,35 @@ a[role="button"]:hover {
   opacity: inherit;                    /* optional */
   margin-right: 15px;                  /* optional */
 }
+
+.no-padding {
+  padding: 0 !important;
+}
+
+/**
+ * animated-underline
+ * @see: http://jsfiddle.net/y4wuurt9/
+ */
+
+.animated-underline {
+  position: relative;
+  text-decoration: none;
+}
+
+.animated-underline:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: blue;
+  -webkit-transition: width 250ms ease-in-out;
+  -moz-transition: width 250ms ease-in-out;
+  -o-transition: width 250ms ease-in-out;
+  transition: width 250ms ease-in-out;
+}
+
+.animated-underline.active:after {
+  width: 100%;   
+}
