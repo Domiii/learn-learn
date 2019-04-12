@@ -29,10 +29,14 @@ class DevicePanel extends Component {
       return <Loading centered />;
     }
 
+    const icon = status && faDoorOpen || faDoorClosed;
+    const col = status && 'success' || 'danger';
+
     return (
       <div className="full-center full-height full-width">
-        <Button className={size && ('font-size-'+size) || ''} color="info" size="lg" onClick={this.toggleDoor}>
-          <FontAwesomeIcon icon={status && faDoorOpen || faDoorClosed } />
+        <Button className={size && ('font-size-'+size) || ''} 
+          color={col} size="lg" onClick={this.toggleDoor}>
+          <FontAwesomeIcon icon={icon} />
         </Button>
       </div>
     );
