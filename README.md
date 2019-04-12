@@ -59,6 +59,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Features?
 1. User list + management
-1. Cohorts
-1. Make + keep a list of notes
-1. Personalized checklists
+1. Door opener
+
+
+## Firestore REST
+* Docs: https://firebase.google.com/docs/firestore/use-rest-api
+* Example: https://firestore.googleapis.com/v1/projects/iot-fun-a9915/databases/(default)/documents/usersPublic

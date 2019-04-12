@@ -36,6 +36,7 @@ function needsUpdate(snap, current, sel) {
 }
 
 export default class CurrentUser extends Container {
+  static n = 'currentUser';
   state = {
     ...auth.currentUser,
     setDisplayRole: displayRole => {
@@ -93,7 +94,9 @@ export default class CurrentUser extends Container {
     onAuthStateChanged(user => {
       this._onUser(user);
       //console.log('onAuthStateChanged CurrentUser', user);
-      this.setState(user);
+      if (user) {
+        this.setState(user);
+      }
     });
   }
 }

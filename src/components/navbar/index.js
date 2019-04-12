@@ -65,7 +65,7 @@ class RouteBtn extends Component {
       cl += ' active';
     }
     return (
-      <MUIButton className={s.menuButton}
+      <MUIButton className={`${s.menuButton} ${s.routeBtn}`}
         color="inherit"
         component={Link} to={route}>
         <span className={cl}>{children}</span>
@@ -150,9 +150,9 @@ class MenuAppBar extends React.Component {
         <AppBar position="static">
           <Toolbar>
             <RouteBtn route={'/'}>DoorCtrl 🚪</RouteBtn>
-            <AdminPages />
+            {currentUser.uid && <AdminPages />}
             <div className={classes.grow} />
-            {currentUser && (
+            {currentUser.uid && (
               <div>
                 <AdminTools />
                 <IconButton

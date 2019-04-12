@@ -1,7 +1,18 @@
-import React from 'react';
+import React, {Component} from 'react';
 
-export default function Home() {
-  return (<div>
-    hi!
-  </div>);
+import { Button } from 'reactstrap';
+
+export default class Home extends Component {
+  toggleDoor = () => {
+    
+  };
+
+  render() {
+    return (<div>
+      hi!
+      <p>
+        <Button onClick={this.toggleDoor}></Button>
+      </p>
+    </div>);
+  }
 }

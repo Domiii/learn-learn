@@ -67,6 +67,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
+    "deploy": "npm run build && firebase deploy",
     "test": "node scripts/test.js",
     "sample-debug": "babel-node --inspect-brk src/samples/$s",
     "sample": "babel-node src/samples/$s"
@@ -126,8 +127,9 @@
       "^src/(.*)$": "<rootDir>/src/$1",
       "^api/(.*)$": "<rootDir>/src/api/$1",
       "^state/(.*)$": "<rootDir>/src/api/state/$1",
-      "^connect$": "<rootDir>/src/api/unstated-connect/connect",
-      "^NotLoaded$": "<rootDir>/src/api/unstated-connect/NotLoaded",
+      "^unstated-ext/(.*)$": "<rootDir>/src/api/unstated-ext/$1",
+      "^connect$": "<rootDir>/src/api/unstated-ext/connect",
+      "^NotLoaded$": "<rootDir>/src/api/unstated-ext/NotLoaded",
       "^components/(.*)$": "<rootDir>/src/components/$1",
       "^pages/(.*)$": "<rootDir>/src/pages/$1"
     },

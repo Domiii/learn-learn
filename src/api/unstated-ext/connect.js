@@ -16,7 +16,12 @@ export default function unstatedConnect(...input) {
   let ContainerNames;
   if (input[0].prototype instanceof Container) {
     ContainerTypes = input;
-    ContainerNames = ContainerTypes.map(c => c.name[0].toLowerCase() + c.name.substring(1));
+    ContainerNames = ContainerTypes.map(c => {
+      if (!c.n) {
+        throw new Error(c + ' Container must (but did not) define `static n` property (indicating the name its data gets assigned when added as a property)');
+      }
+      return c.n;
+    });
   }
   else if (isPlainObject(input[0])) {
     const config = input[0];
