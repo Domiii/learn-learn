@@ -30,6 +30,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     1. Add Bootstrap + reactstrap
          1. See: https://reactstrap.github.io/
     1. Add [react-fontawesome](https://github.com/FortAwesome/react-fontawesome)
+        * `npm i -s @fortawesome/fontawesome-svg-core @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons`
+        * https://fontawesome.com/how-to-use/on-the-web/using-with/react
     1. Add [material-ui](https://material-ui.com/) - `npm i -s @material-ui/core @material-ui/icons`
 1. Add firebase ([as explained in the docs](https://facebook.github.io/create-react-app/docs/deployment#firebase-https-firebasegooglecom))
     1. `$ firebase init`

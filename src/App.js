@@ -13,6 +13,9 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import { blue, pink, red, green } from '@material-ui/core/colors';
 
+
+// setup MUI theme
+
 const theme = createMuiTheme({
   palette: {
     primary: blue,

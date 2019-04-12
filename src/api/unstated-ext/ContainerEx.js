@@ -1,4 +1,4 @@
-export { Container } from 'unstated';
+import { Container } from 'unstated';
 
 export default class ContainerEx extends Container {
   constructor() {

@@ -1,18 +1,11 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
-import { Button } from 'reactstrap';
+import DevicePanel from 'components/DevicePanel';
 
 export default class Home extends Component {
-  toggleDoor = () => {
-    
-  };
-
   render() {
-    return (<div>
-      hi!
-      <p>
-        <Button onClick={this.toggleDoor}></Button>
-      </p>
+    return (<div className="full-width">
+      <DevicePanel deviceId={'door1'} size="5" />
     </div>);
   }
 }

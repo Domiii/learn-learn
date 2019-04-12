@@ -65,6 +65,10 @@ a[role="button"]:hover {
 .font-size-2 {
   font-size: 2em;
 }
+  
+.font-size-5 {
+  font-size: 5em !important;
+}
 
 
 /* see: https://stackoverflow.com/a/27732769 */

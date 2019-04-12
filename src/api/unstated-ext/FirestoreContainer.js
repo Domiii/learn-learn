@@ -3,25 +3,39 @@ import zipObject from 'lodash/zipObject';
 import { db } from 'api/firebase';
 import NotLoaded from 'NotLoaded';
 
+import ContainerEx from './ContainerEx';
+
 
 export default class FirestoreContainer extends ContainerEx {
   _registered = new Map();
 
-  container(collectionName) {
+  constructor() {
     super();
 
-    if (!this.constructor.n) {
+    let collectionName;
+    if (this.constructor.n) {
       // collection name is also the default container name
-      this.constructor.n = collectionName;
+      collectionName = this.constructor.n;
+    }
+    else {
+      throw new Error('FirestoreContainer must define static property `n` (short for `name`): ' + this.constructor.name);
     }
 
     this.collectionName = collectionName;
     this.collection = db.collection(collectionName);
 
     const {
+      actions,
       values, 
       queries
     } = this;
+
+    if (actions) {
+      // merge actions into `state` as well as into `this`
+      this.state = Object.assign(this.state, actions);
+      Object.assign(this, actions);
+    }
+
     if (values) {
       this.registerValues(values);
     }
@@ -31,11 +45,11 @@ export default class FirestoreContainer extends ContainerEx {
   }
 
   registerValues = (config) => {
-    const _originalState = this.state;
+    const _originalState = this.state || {};
     for (let name in config) {
-      const {ref, map: mapFn} = config[name];
+      const {ref, map: mapFn, mergeRoot: mergeFn} = config[name];
       const registration = {
-        ref, mapFn
+        ref, mapFn, mergeFn
       };
 
       // register
@@ -50,14 +64,20 @@ export default class FirestoreContainer extends ContainerEx {
               let result;
               if (mapFn) {
                 const oldState = this.state[name];
-                result = await map(snap, oldState, ref, name);
+                result = await mapFn(snap, oldState, ref, name);
               }
               else {
                 result = snap;
               }
 
-              // store result
+              // set state for given path
               this.setState({ [name]: result });
+
+              if (mergeFn) {
+                // merge back into root
+                const res = await mergeFn(snap, ref, name);
+                this.setState(res);
+              }
             });
 
             // override the proxy call

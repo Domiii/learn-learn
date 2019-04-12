@@ -149,7 +149,8 @@ class MenuAppBar extends React.Component {
         {/* <MuiThemeProvider theme={theme}> */}
         <AppBar position="static">
           <Toolbar>
-            <RouteBtn route={'/'}>DoorCtrl 🚪</RouteBtn>
+            <RouteBtn route={'/'}>Home🚪</RouteBtn>
+            {/* <RouteBtn route={'/devices'}>⚙Devices⚙</RouteBtn> */}
             {currentUser.uid && <AdminPages />}
             <div className={classes.grow} />
             {currentUser.uid && (
