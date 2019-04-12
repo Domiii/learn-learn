@@ -9,6 +9,7 @@ import RoleId from 'api/roles';
 
 import Home from './pages/Home';
 import UserPage from './pages/UserPage';
+import LearnerPage from './pages/LearnerPage';
 import Login from './pages/Login';
 import NotFound404 from './pages/NotFound404';
 
@@ -67,7 +68,7 @@ class AdminRoute extends Component {
       <Route
         render={this.route}
       />
-    )
+    );
   }
 }
 
@@ -76,6 +77,7 @@ export default function AppRoutes() {
     <Switch>
       <NoUserRoute exact path="/login" Comp={Login} />
       <UserRoute exact path="/" Comp={Home} />
+      <UserRoute exact path="/learner" Comp={LearnerPage} />
       <AdminRoute exact path="/users" Comp={UserPage} />
 
       <Route Comp={NotFound404} />

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom'
+import React, { Component } from 'react';
+import { Link, withRouter } from 'react-router-dom';
 
 import PropTypes from 'prop-types';
 
@@ -10,7 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Button from '@material-ui/core/Button';
+import MUIButton from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 import Icon from '@material-ui/core/Icon';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -21,13 +21,14 @@ import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 
+
+import { Button } from 'reactstrap';
+
+
 import connect from 'connect';
 import CurrentUser from 'state/CurrentUser';
 import Users from 'state/Users';
 import { logout } from 'api/auth';
-
-
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import RoleId, { hasRole } from 'api/roles';
 import { blue, pink, white } from '@material-ui/core/colors';
@@ -43,15 +44,35 @@ const styles = {
     marginLeft: -12,
     marginRight: 20
   },
+  routeBtn: {
+    fontSize: '1.2em'
+  },
+  adminBtn: {
+    lineHeight: 0
+  }
 };
 
-const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-    secondary: pink
-  },
-});
 
+@withStyles(styles)
+@withRouter
+class RouteBtn extends Component {
+  render() {
+    const s = this.props.classes;
+    const { route, children, ...props } = this.props;
+
+    let cl = 'animated-underline';
+    if (this.props.location.pathname === route) {
+      cl += ' active';
+    }
+    return (
+      <MUIButton className={`${s.menuButton} ${s.routeBtn}`}
+        color="inherit"
+        component={Link} to={route}>
+        <span className={cl}>{children}</span>
+      </MUIButton>
+    );
+  }
+}
 
 
 @connect(CurrentUser)
@@ -63,13 +84,9 @@ class AdminPages extends React.Component {
       return '';
     }
 
-    const s = this.props.classes;
     return (<>
       <div className="divider-vertical" />
-      <Button className={s.menuButton} color="inherit"
-        component={Link} to="/users">
-        Users
-      </Button>
+      <RouteBtn route={'/users'}>Users</RouteBtn>
     </>);
   }
 }
@@ -91,13 +108,18 @@ class AdminTools extends React.Component {
       return '';
     }
 
+    const s = this.props.classes;
+    const active = hasRole(this.props.currentUser.displayRole, 'Admin');
+
     return (<>
-      <Fab
+      <Button
+        className={s.adminBtn}
         onClick={this.toggleAdmin}
-        color="primary"
+        color={active && 'success' || 'danger'}
+        size="small"
       >
         <Icon >star</Icon>
-      </Fab>
+      </Button>
     </>);
   }
 }
@@ -127,15 +149,11 @@ class MenuAppBar extends React.Component {
         {/* <MuiThemeProvider theme={theme}> */}
         <AppBar position="static">
           <Toolbar>
-            <Button className={classes.menuButton} color="inherit"
-              component={Link} to="/">
-              {/* <Typography className={classes.title}  color="secondary" variant="title" noWrap> */}
-              Learn-learn
-              {/* </Typography> */}
-            </Button>
-            <AdminPages />
+            <RouteBtn route={'/'}>Home</RouteBtn>
+            <RouteBtn route={'/learner'}>My Journey</RouteBtn>
+            {currentUser.uid && <AdminPages />}
             <div className={classes.grow} />
-            {currentUser && (
+            {currentUser.uid && (
               <div>
                 <AdminTools />
                 <IconButton

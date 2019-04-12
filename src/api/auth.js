@@ -10,7 +10,8 @@ export async function login() {
   //provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
 
   try {
-    const result = await firebase.auth().signInWithPopup(provider);
+    //const result = await firebase.auth().signInWithPopup(provider);
+    const result = await firebase.auth().signInWithRedirect(provider);
 
     // finished logging in!
     console.log('Login: ', result);
@@ -23,7 +24,8 @@ export async function login() {
 
 
 export async function logout() {
-  return firebase.auth().signOut();
+  firebase.auth().signOut();
+  window.location.reload();
 }
 
 export default firebase.auth();
