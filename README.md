@@ -29,6 +29,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 1. Make things prettier
     1. Add Bootstrap + reactstrap
          1. See: https://reactstrap.github.io/
+    1. Add [flexbox-react](https://www.npmjs.com/package/flexbox-react) for simple, practical layouting
     1. Add [react-fontawesome](https://github.com/FortAwesome/react-fontawesome)
         * `npm i -s @fortawesome/fontawesome-svg-core @fortawesome/react-fontawesome @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons`
         * https://fontawesome.com/how-to-use/on-the-web/using-with/react
