@@ -16,16 +16,19 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     1. Configure eslint: https://www.npmjs.com/package/eslint-config-react-app
     1. Adding custom folder aliases: (a) add to webpack and also (b) add to `package.json`'s `jest.`[`moduleNameMapper`](https://alexjover.com/blog/enhance-jest-configuration-with-module-aliases/)
     1. Add `src/samples` folder to test new libraries and new concepts
-    1. Setup Babel for running individual files
-        1. See: https://babeljs.io/docs/en/babel-node
-        1. Add `.babelrc`
-            1. [reference config](https://github.com/Domiii/dbdi/blob/master/.babelrc)
-            1. `"presets": ["@babel/preset-env", "@babel/preset-react"]`
-        1. Install missing plugins: `$ npm i --save-dev @babel/plugin-proposal-decorators @babel/plugin-proposal-class-properties @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from`
+1. Setup Babel for server
+    1. See: https://babeljs.io/docs/en/babel-node
+    1. Add `.babelrc`
+        1. [reference config](https://github.com/Domiii/dbdi/blob/master/.babelrc)
+    1. Install 
+        1. missing plugins: `$ npm i --save-dev @babel/plugin-proposal-decorators @babel/plugin-proposal-class-properties @babel/plugin-proposal-function-bind @babel/plugin-syntax-export-default-from`
         1. `npm i --save-dev @babel/core @babel/node @babel/cli`
         1. `npm i -s core-js@3`
-        1. Debug + wait initially: `babel-node --inspect-brk src/samples/someSample`
-        1. Using nodemon: `nodemon --exec babel-node --inspect src/samples/someSample`
+        1. More dev tools: `npm i -D nodemon`
+    1. Add scripts to `package.json`:
+        1. Start server (without debugger): `nodemon --exec npx babel-node server`
+        1. Debug + wait initially (without nodemon): `npx babel-node --inspect-brk server`
+        1. Debug + nodemon: `nodemon --exec npx babel-node --inspect server`
 1. Make things prettier
     1. Add Bootstrap + reactstrap
          1. See: https://reactstrap.github.io/

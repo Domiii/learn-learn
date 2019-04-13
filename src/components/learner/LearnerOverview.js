@@ -11,11 +11,27 @@ import connect from 'connect';
 import Learner from 'state/Learner';
 
 // TODO: Allow to quickly tab through the entire thing
- /** Features:
+ /**
+  * Proper outcome + expectation of what you can get out of this.
+    * -> Assists decision making in your learning
+    * -> Helps you shape your learning path incrementally (rather than (fully) pre-planned) 
+    * -> TODO: Must be super tangible
+      * -> Problem: Learning is not just working through a TODO list
+        * also needs proper reflection
+        * also needs laying out of strategy (could be self- or other-directed)
+    * -> TODO: Allow new-comers to this to quickly feel how this supports their learning
+  * Features:
+    * -> Challenges
+      * Daily vs. Weekly vs. Monthly vs. one-off?
+      * Personal vs. Co-learning
+      * hard skills vs. soft skills (e.g. habits of code vs. habits of mind?)
+      * -> build the Routines that you want to build
+    * -> Positive feedback + basic gamification elements to feel in flow while using this
   * -> At the very least be able to keep notes in MD
   * -> Linkage for different IDEs/editors + other basic 基本功 (including english + code typing)
   * -> Crud for a "routines library"? (routines that I have pre-prepared)
-  * -> Project stuff?
+  * -> Goal setting, TODOs + Milestones?
+  * -> More Project stuff?
   */
 // TODO: Link in concepts + research behind this approach (and each individual aspect of it)
 // TODO: personalized log sections?
@@ -48,10 +64,16 @@ class LogEntryEncouragement extends Component {
 
 const LearnerLogSections = [
   {
-    title: 'Concepts/Keywords'
+    title: 'Drive'
+    // Multiple choice: Flow, Routine, Discipline
   },
   {
-    title: 'What steps did I take?'
+    title: 'What did I do?',
+    desc: 'Short Summary + My Main Concepts and Keywords for today'
+  },
+  {
+    title: 'What steps did I take?',
+    desc: 'More detailed description of my process'
   },
   {
     title: 'Aha! moments + Warm and fuzzy feelings of accomplishment'
