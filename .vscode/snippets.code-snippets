@@ -1,0 +1,17 @@
+{
+	"import_Reactstrap_components": {
+		"prefix": "irt.reactstrap",
+		"body": [
+			"import { $1 } from 'reactstrap';$0"
+		],
+		"description": "import_Reactstrap_components"
+	},
+	"import_fortawesome_icons": {
+		"prefix": "irt.fortawesome",
+		"body": [
+			"import { $1 } from '@fortawesome/free-solid-svg-icons';",
+			"import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';$0"
+		],
+		"description": "import_fortawesome_icons"
+	},
+}

@@ -7,10 +7,11 @@ import NotLoaded from 'NotLoaded';
 
 import RoleId from 'api/roles';
 
+import Login from './pages/Login';
 import Home from './pages/Home';
 import UserPage from './pages/UserPage';
 import LearnerPage from './pages/LearnerPage';
-import Login from './pages/Login';
+import LearnerPathsPage from './pages/LearnerPathsPage';
 import NotFound404 from './pages/NotFound404';
 
 import Loading from 'components/Loading';
@@ -78,6 +79,7 @@ export default function AppRoutes() {
       <NoUserRoute exact path="/login" Comp={Login} />
       <UserRoute exact path="/" Comp={Home} />
       <UserRoute exact path="/learner" Comp={LearnerPage} />
+      <UserRoute exact path="/path" Comp={LearnerPathsPage} />
       <AdminRoute exact path="/users" Comp={UserPage} />
 
       <Route Comp={NotFound404} />

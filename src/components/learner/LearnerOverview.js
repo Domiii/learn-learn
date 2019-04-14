@@ -10,6 +10,7 @@ import { Button, Alert } from 'reactstrap';
 import connect from 'connect';
 import Learner from 'state/Learner';
 
+const newLocal = 1;
 // TODO: Allow to quickly tab through the entire thing
  /**
   * Proper outcome + expectation of what you can get out of this.
@@ -29,6 +30,14 @@ import Learner from 'state/Learner';
     * -> Positive feedback + basic gamification elements to feel in flow while using this
   * -> At the very least be able to keep notes in MD
   * -> Linkage for different IDEs/editors + other basic 基本功 (including english + code typing)
+    * -> Keyboard shortcuts basics
+      * -> UNDO/REDO
+      * -> Move around with arrow keys
+      * -> Jump to beginning/end of line/file
+      * -> select with shift
+    * -> e.g. https://vscodecandothat.com/
+      * -> Toggle sidebar focus: CTRL/Cmd + 1/0
+      * -> Soft Undo: CTRL/Cmd + U
   * -> Crud for a "routines library"? (routines that I have pre-prepared)
   * -> Goal setting, TODOs + Milestones?
   * -> More Project stuff?

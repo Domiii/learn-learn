@@ -7,8 +7,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     1. `$ npx create-react-app my-app`
     1. `$ cd my-app`
     1. `$ npm start`
-1. Fix things for VSCode
+1. Improve things for VSCode
    1. [Experimental Decorators error present](https://github.com/Microsoft/vscode/issues/28097)
+   1. [Simple-react-snippets](https://marketplace.visualstudio.com/items?itemName=burkeholland.simple-react-snippets)
+   1. Configure emmet to include JS files: https://code.visualstudio.com/docs/editor/emmet
 1. Read [the create-react-app docs](https://facebook.github.io/create-react-app/docs/)
 1. Get ready for a more pleasant development experience
     1. Install chalk: `$ npm i -s chalk`
