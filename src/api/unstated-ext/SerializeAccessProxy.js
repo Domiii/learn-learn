@@ -8,11 +8,13 @@ class SerializeAccessState {
     this.current = root;
     this.chain = [];
   }
+
+  serialized() {
+    return this.chain.map(s => isString(s) ? s : JSON.stringify(s)).join('');
+  }
 }
 
-export default function makeProxy(target, state) {
-  state = state || new SerializeAccessState(target);
-
+function _makeProxy(target, state) {
   // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
   const p = new Proxy(target, {
     has(target, prop) {
@@ -24,7 +26,7 @@ export default function makeProxy(target, state) {
         case '__result':
           return state.current;
         case '__serialized':
-          return state.chain.map(s => isString(s) ? s : JSON.stringify(s)).join('');
+          return state.serialized();
       }
 
       if (this.has(target, prop)) {
@@ -48,4 +50,19 @@ export default function makeProxy(target, state) {
     }
   });
   return p;
-};
+}
+
+
+/**
+ * Creates a new SerializeAccessProxy.
+ * This proxy allows for function chaining on any arbitrary object `target`.
+ * 
+ * Generates two outputs:
+ * 1. myProxy.__result - The returned value from the chain of calls on `target`.
+ * 1. myProxy.__serialized - A string representing a serialized path of access.
+ * 
+ * See test for usage examples.
+ */
+export default function makeProxy(target) {
+  return _makeProxy(target, new SerializeAccessState(target));
+}

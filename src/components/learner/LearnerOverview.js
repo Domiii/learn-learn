@@ -8,42 +8,8 @@ import Flexbox from 'flexbox-react';
 import { Button, Alert } from 'reactstrap';
 
 import connect from 'connect';
-import Learner from 'state/Learner';
+import Learners from 'state/Learners';
 
-const newLocal = 1;
-// TODO: Allow to quickly tab through the entire thing
- /**
-  * Proper outcome + expectation of what you can get out of this.
-    * -> Assists decision making in your learning
-    * -> Helps you shape your learning path incrementally (rather than (fully) pre-planned) 
-    * -> TODO: Must be super tangible
-      * -> Problem: Learning is not just working through a TODO list
-        * also needs proper reflection
-        * also needs laying out of strategy (could be self- or other-directed)
-    * -> TODO: Allow new-comers to this to quickly feel how this supports their learning
-  * Features:
-    * -> Challenges
-      * Daily vs. Weekly vs. Monthly vs. one-off?
-      * Personal vs. Co-learning
-      * hard skills vs. soft skills (e.g. habits of code vs. habits of mind?)
-      * -> build the Routines that you want to build
-    * -> Positive feedback + basic gamification elements to feel in flow while using this
-  * -> At the very least be able to keep notes in MD
-  * -> Linkage for different IDEs/editors + other basic 基本功 (including english + code typing)
-    * -> Keyboard shortcuts basics
-      * -> UNDO/REDO
-      * -> Move around with arrow keys
-      * -> Jump to beginning/end of line/file
-      * -> select with shift
-    * -> e.g. https://vscodecandothat.com/
-      * -> Toggle sidebar focus: CTRL/Cmd + 1/0
-      * -> Soft Undo: CTRL/Cmd + U
-  * -> Crud for a "routines library"? (routines that I have pre-prepared)
-  * -> Goal setting, TODOs + Milestones?
-  * -> More Project stuff?
-  */
-// TODO: Link in concepts + research behind this approach (and each individual aspect of it)
-// TODO: personalized log sections?
 
 const EncouragementTexts = [
   '🌇 I took another step in the journey... 🧠',
@@ -131,7 +97,7 @@ class AddButtons extends Component {
   }
 }
 
-@connect(Learner)
+@connect(Learners)
 class LearnerOverview extends Component {
   render() {
     return (<>

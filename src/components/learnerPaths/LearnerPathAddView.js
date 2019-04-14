@@ -15,7 +15,7 @@ class LearnerPathAddView extends Component {
 
   render() { 
     const { adding } = this.state;
-    return ( <div>
+    return ( <div className="full-width">
       <Button active={adding} onClick={this.onClickAdd}>
         <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
         Add Learner Path

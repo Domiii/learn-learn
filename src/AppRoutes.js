@@ -79,7 +79,7 @@ export default function AppRoutes() {
       <NoUserRoute exact path="/login" Comp={Login} />
       <UserRoute exact path="/" Comp={Home} />
       <UserRoute exact path="/learner" Comp={LearnerPage} />
-      <UserRoute exact path="/path" Comp={LearnerPathsPage} />
+      <UserRoute exact path="/learning-path" Comp={LearnerPathsPage} />
       <AdminRoute exact path="/users" Comp={UserPage} />
 
       <Route Comp={NotFound404} />

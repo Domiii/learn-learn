@@ -1,9 +1,13 @@
 import zipObject from 'lodash/zipObject';
 
-import { db } from 'api/firebase';
+import {
+  db
+} from 'api/firebase';
 import NotLoaded from 'NotLoaded';
 
 import ContainerEx from './ContainerEx';
+import isObject from 'lodash/isObject';
+import isFunction from 'lodash/isFunction';
 
 
 export default class FirestoreContainer extends ContainerEx {
@@ -16,8 +20,7 @@ export default class FirestoreContainer extends ContainerEx {
     if (this.constructor.n) {
       // collection name is also the default container name
       collectionName = this.constructor.n;
-    }
-    else {
+    } else {
       throw new Error('FirestoreContainer must define static property `n` (short for `name`): ' + this.constructor.name);
     }
 
@@ -26,7 +29,7 @@ export default class FirestoreContainer extends ContainerEx {
 
     const {
       actions,
-      values, 
+      values,
       queries
     } = this;
 
@@ -44,12 +47,30 @@ export default class FirestoreContainer extends ContainerEx {
     }
   }
 
+  get db() {
+    return db;
+  }
+
+  doc = id => {
+    return this.collection.doc(id);
+  }
+
   registerValues = (config) => {
     const _originalState = this.state || {};
     for (let name in config) {
-      const {ref, map: mapFn, mergeRoot: mergeFn} = config[name];
+      let {
+        ref,
+        map: mapFn,
+        mergeRoot
+      } = config[name];
+
+      mapFn = mapFn.bind(this);
+      mergeRoot = mergeRoot.bind(this);
+
       const registration = {
-        ref, mapFn, mergeFn
+        ref,
+        mapFn,
+        mergeRoot
       };
 
       // register
@@ -63,19 +84,20 @@ export default class FirestoreContainer extends ContainerEx {
             registration.unsub = ref.onSnapshot(async snap => {
               let result;
               if (mapFn) {
-                const oldState = this.state[name];
-                result = await mapFn(snap, oldState, ref, name);
-              }
-              else {
+                //const oldState = this.state[name];
+                result = await mapFn(snap);
+              } else {
                 result = snap;
               }
 
               // set state for given path
-              this.setState({ [name]: result });
+              this.setState({
+                [name]: result
+              });
 
-              if (mergeFn) {
+              if (mergeRoot) {
                 // merge back into root
-                const res = await mergeFn(snap, ref, name);
+                const res = await mergeRoot(snap, name, ref);
                 this.setState(res);
               }
             });
@@ -94,8 +116,100 @@ export default class FirestoreContainer extends ContainerEx {
     this.setState(_originalState);
   }
 
-  doc = id => {
-    return this.collection.doc(id);
+  _updateQueryCache(name, argsPath, result) {
+    const {_queryStates} = this.state;
+    const queryState = _queryStates[name];
+
+    queryState[argsPath] = result;
+
+    this.setState(_queryStates);
+  }
+
+  _queryRead = (registration, ...args) => {
+    const {name, query} = registration;
+    const {
+      _queryStates
+    } = this.state;
+
+    // make sure, args kinda check out.
+    args.forEach(arg => {
+      if (isObject(arg) || isFunction(arg)) {
+        throw new Error(`Invalid call to Firestore query in ${this}: arguments must all be primitives: ` + JSON.stringify(args));
+      }
+    });
+
+    const queryState = _queryStates[name];
+    const argsPath = JSON.stringify(args);
+
+    if (!queryState.loadStatus[argsPath]) {
+      // first time -> initialize query
+      queryState.loadStatus[argsPath] = true;
+
+      const {
+        mapFn
+      } = registration;
+
+      const ref = query(...args);
+
+      const unsub = ref.onSnapshot(async snap => {
+        let result;
+        if (mapFn) {
+          result = await mapFn(snap, ...args);
+        } else {
+          result = snap;
+        }
+
+        this._updateQueryCache(name, argsPath, result);
+      });
+
+      // TODO: when unsubbing, also need to reset loadStatus (+ cache)
+      registration.unsub = unsub;
+    }
+    return queryState.cache[argsPath];
+  }
+
+  registerQueries = config => {
+    const _queryStates = {};
+    for (let name in config) {
+      let {
+        query,
+        map: mapFn,
+        mergeRoot
+      } = config[name];
+
+      mapFn = mapFn.bind(this);
+      mergeRoot = mergeRoot.bind(this);
+      query = query.bind(this);
+
+      // make sure, query is a function
+      if (!isFunction(query)) {
+        throw new Error(`Invalid query entry: ${this}.queries.${name}.query is not (but must be) function.`);
+      }
+    
+      const registration = {
+        name,
+        query,
+        mapFn,
+        mergeRoot
+      };
+
+      // register
+      this._registered.set(name, registration);
+
+      this.setState({
+        [name]: this._queryRead.bind(this, registration)
+      });
+
+      _queryStates[name] = {
+        cache: {},
+        loadStatus: {}
+      };
+    }
+
+    this.setState({
+      // cache is used by queries
+      _queryStates
+    });
   }
 
   /**
@@ -106,5 +220,9 @@ export default class FirestoreContainer extends ContainerEx {
     const ids = snap.docs.map(d => d.id);
     const data = snap.docs.map(d => d.data());
     return zipObject(ids, data);
+  }
+
+  toString = () => {
+    return this.constructor.n || this.constructor.name;
   }
 }
