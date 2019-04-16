@@ -7,11 +7,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     1. `$ npx create-react-app my-app`
     1. `$ cd my-app`
     1. `$ npm start`
+    1. (Read [the create-react-app docs](https://facebook.github.io/create-react-app/docs/))
 1. Improve things for VSCode
    1. [Experimental Decorators error present](https://github.com/Microsoft/vscode/issues/28097)
    1. [Simple-react-snippets](https://marketplace.visualstudio.com/items?itemName=burkeholland.simple-react-snippets)
    1. Configure emmet to include JS files: https://code.visualstudio.com/docs/editor/emmet
-1. Read [the create-react-app docs](https://facebook.github.io/create-react-app/docs/)
 1. Get ready for a more pleasant development experience
     1. Install chalk: `$ npm i -s chalk`
     1. Install Nodemon: `$ npm i -s nodemon`
@@ -70,37 +70,62 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 1. Cohorts
 1. Make + keep a list of notes
 1. Personalized checklists
+1. Super-awesome-buffet for really tracking your own stuff~
+  * Related: https://devhints.io/
 
+
+
+* New ideas
+  * 網站開發課綱： https://gist.github.com/Domiii/707257ceaa13d76ab6f743a1bae95e21
+  * https://stripe.com/docs/payments
 
 * Allow to quickly tab through the entire thing
-* Proper outcome + expectation of what you can get out of this.
-* -> Assists decision making in your learning
-* -> Helps you shape your learning path incrementally (rather than (fully) pre-planned) 
-* -> TODO: Must be super tangible
-    * -> Problem: Learning is not just working through a TODO list
-    * also needs proper reflection
-    * also needs laying out of strategy (could be self- or other-directed)
-* -> TODO: Allow new-comers to this to quickly feel how this supports their learning
+* Proper outcome + expectation of what you can get out of this:
+    * -> Assists decision making in your learning
+    * -> Helps you shape your learning path incrementally (rather than (fully) pre-planned) 
+    * -> TODO: Must be super tangible
+        * -> Problem: Learning is not just working through a TODO list
+        * also needs proper reflection
+        * also needs laying out of strategy (could be self- or other-directed)
+    * -> TODO: Allow new-comers to this to quickly feel how this supports their learning
 * Features:
-* -> Challenges
-    * Daily vs. Weekly vs. Monthly vs. one-off?
-    * Personal vs. Co-learning
-    * hard skills vs. soft skills (e.g. habits of code vs. habits of mind?)
-    * -> build the Routines that you want to build
-* -> Positive feedback + basic gamification elements to feel in flow while using this
-* -> At the very least be able to keep notes in MD
-* -> Linkage for different IDEs/editors + other basic 基本功 (including english + code typing)
-* -> Keyboard shortcuts basics
-    * -> UNDO/REDO
-    * -> Move around with arrow keys
-    * -> Jump to beginning/end of line/file
-    * -> select with shift
-* -> e.g. https://vscodecandothat.com/
-    * -> Toggle sidebar focus: CTRL/Cmd + 1/0
-    * -> Soft Undo: CTRL/Cmd + U
-* -> Crud for a "routines library"? (routines that I have pre-prepared)
-* -> Goal setting, TODOs + Milestones?
-* -> More Project stuff?
+    * Learning Path (step-by-step run-downs + hints for working through individual problems)
+        * Problem solving strategies?
+    * -> Challenges
+        * Daily vs. Weekly vs. Monthly vs. one-off?
+        * Personal vs. Co-learning
+        * hard skills vs. soft skills (e.g. habits of code vs. habits of mind?)
+        * -> build the Routines that you want to build
+    * -> Positive feedback + basic gamification elements to feel in flow while using this
+    * -> At the very least be able to keep notes in MD
+    * -> Linkage for different IDEs/editors + other basic 基本功 (including english + code typing)
+    * -> Keyboard shortcuts basics
+        * -> UNDO/REDO
+        * -> Move around with arrow keys
+        * -> Jump to beginning/end of line/file
+        * -> select with shift
+        * -> e.g. https://vscodecandothat.com/
+            * -> Toggle sidebar focus: CTRL/Cmd + 1/0
+            * -> Soft Undo: CTRL/Cmd + U
+    * -> Crud for a "routines library"? (routines that I have pre-prepared)
+    * -> Goal setting, TODOs + Milestones?
+    * -> More Project stuff?
+    * Custom login options
+        * Coach can manually add new coachee (via name and/or URL) and use session to keep track of login status
+        * Coach can control coachee interface
 
 // TODO: Link in concepts + research behind this approach (and each individual aspect of it)
 // TODO: personalized log sections?
+TODO:
+-> Write up on the desperation and inefficiencies of the traditional approaches to learning programming + CS, and what my alternative to that looks like.
+-> Concrete examples of problems + what most students feel when they go through the process (inside the system)
+
+-> On the plus side:
+  -> more concrete examples of learner strategies
+    -> How to learn language basics?
+    -> How to learn Algorithms/problem solving strategies?
+    -> How to learn frameworks?
+    -> How to get started with your own projects?
+    -> How to own your learning?!!!
+  -> freedom, "overcoming the reptile brain" + creativity
+-> Citations + references
