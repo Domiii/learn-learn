@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import UserPage from './pages/UserPage';
 import LearnerPage from './pages/LearnerPage';
+import LearnerLogPage from './pages/LearnerLogPage';
 import LearnerPathsPage from './pages/LearnerPathsPage';
 import NotFound404 from './pages/NotFound404';
 
@@ -78,6 +79,7 @@ export default function AppRoutes() {
     <Switch>
       <NoUserRoute exact path="/login" Comp={Login} />
       <UserRoute exact path="/" Comp={Home} />
+      <UserRoute exact path="/log" Comp={LearnerLogPage} />
       <UserRoute exact path="/learner" Comp={LearnerPage} />
       <UserRoute exact path="/learning-path" Comp={LearnerPathsPage} />
       <AdminRoute exact path="/users" Comp={UserPage} />

@@ -64,8 +64,16 @@ export default class FirestoreContainer extends ContainerEx {
         mergeRoot
       } = config[name];
 
-      mapFn = mapFn.bind(this);
-      mergeRoot = mergeRoot.bind(this);
+      if (!ref) {
+        throw new Error(`ref was not provided in ${this}.values.${name}`);
+      }
+
+      if (mapFn) {
+        mapFn = mapFn.bind(this);
+      }
+      if (mergeRoot) {
+        mergeRoot = mergeRoot.bind(this);
+      }
 
       const registration = {
         ref,
@@ -113,20 +121,26 @@ export default class FirestoreContainer extends ContainerEx {
         }
       });
     }
-    this.setState(_originalState);
+    this.state = _originalState;
   }
 
   _updateQueryCache(name, argsPath, result) {
-    const {_queryStates} = this.state;
-    const queryState = _queryStates[name];
-
-    queryState[argsPath] = result;
-
-    this.setState(_queryStates);
+    this.setState(({
+      _queryStates
+    }) => {
+      const queryState = _queryStates[name];
+      queryState[argsPath] = result;
+      return {
+        _queryStates
+      };
+    });
   }
 
   _queryRead = (registration, ...args) => {
-    const {name, query} = registration;
+    const {
+      name,
+      query
+    } = registration;
     const {
       _queryStates
     } = this.state;
@@ -177,15 +191,18 @@ export default class FirestoreContainer extends ContainerEx {
         mergeRoot
       } = config[name];
 
-      mapFn = mapFn.bind(this);
-      mergeRoot = mergeRoot.bind(this);
-      query = query.bind(this);
-
+      if (mapFn) {
+        mapFn = mapFn.bind(this);
+      }
+      if (mergeRoot) {
+        mergeRoot = mergeRoot.bind(this);
+      }
       // make sure, query is a function
       if (!isFunction(query)) {
         throw new Error(`Invalid query entry: ${this}.queries.${name}.query is not (but must be) function.`);
       }
-    
+      query = query.bind(this);
+
       const registration = {
         name,
         query,
@@ -196,7 +213,8 @@ export default class FirestoreContainer extends ContainerEx {
       // register
       this._registered.set(name, registration);
 
-      this.setState({
+      // the actual query will be registered as the queryRead function on the given registration
+      Object.assign(this.state, {
         [name]: this._queryRead.bind(this, registration)
       });
 
@@ -206,7 +224,7 @@ export default class FirestoreContainer extends ContainerEx {
       };
     }
 
-    this.setState({
+    Object.assign(this.state, {
       // cache is used by queries
       _queryStates
     });

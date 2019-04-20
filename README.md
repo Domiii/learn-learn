@@ -89,30 +89,32 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
         * also needs laying out of strategy (could be self- or other-directed)
     * -> TODO: Allow new-comers to this to quickly feel how this supports their learning
 * Features:
-    * Learning Path (step-by-step run-downs + hints for working through individual problems)
-        * Problem solving strategies?
-    * -> Challenges
+    * Learning Paths: Content + Knowledge Base
+        * step-by-step run-downs + hints for working through individual problems
+        * Concepts: identify/review concepts that will be inescapable on the learning path
+    * Routines; Daily(or "Regularly")/weekly/monthly
+    * Problem solving strategies
+    * Challenges
         * Daily vs. Weekly vs. Monthly vs. one-off?
         * Personal vs. Co-learning
         * hard skills vs. soft skills (e.g. habits of code vs. habits of mind?)
         * -> build the Routines that you want to build
-    * -> Positive feedback + basic gamification elements to feel in flow while using this
-    * -> At the very least be able to keep notes in MD
     * -> Linkage for different IDEs/editors + other basic 基本功 (including english + code typing)
-    * -> Keyboard shortcuts basics
-        * -> UNDO/REDO
-        * -> Move around with arrow keys
-        * -> Jump to beginning/end of line/file
-        * -> select with shift
-        * -> e.g. https://vscodecandothat.com/
-            * -> Toggle sidebar focus: CTRL/Cmd + 1/0
-            * -> Soft Undo: CTRL/Cmd + U
-    * -> Crud for a "routines library"? (routines that I have pre-prepared)
+        * -> Keyboard shortcuts basics
+            * -> UNDO/REDO
+            * -> Move around with arrow keys
+            * -> Jump to beginning/end of line/file
+            * -> select with shift
+            * -> e.g. https://vscodecandothat.com/
+                * -> Toggle sidebar focus: CTRL/Cmd + 1/0
+                * -> Soft Undo: CTRL/Cmd + U
     * -> Goal setting, TODOs + Milestones?
     * -> More Project stuff?
     * Custom login options
         * Coach can manually add new coachee (via name and/or URL) and use session to keep track of login status
         * Coach can control coachee interface
+* Design
+    * -> Positive feedback + basic gamification elements to feel in flow while using this
 
 // TODO: Link in concepts + research behind this approach (and each individual aspect of it)
 // TODO: personalized log sections?

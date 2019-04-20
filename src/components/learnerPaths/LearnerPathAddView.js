@@ -20,7 +20,7 @@ class LearnerPathAddView extends Component {
         <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
         Add Learner Path
       </Button>
-      { adding && LearnerPathEditor }
+      { adding && <LearnerPathEditor /> }
     </div> );
   }
 }
