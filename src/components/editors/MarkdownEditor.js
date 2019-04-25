@@ -9,7 +9,6 @@ const config = {
   $blockScrolling: true
 };
 
-
 /**
  * - uses ACE for editing
  */
@@ -19,21 +18,24 @@ const config = {
 // TODO: add link support (should have link support already;  if not: https://github.com/godaddy/react-markdown-github)
 // TODO: add improved Codeblock support: https://github.com/Domiii/self-asssessment-app/blob/5ff1af4951476b9699d503f7967f06c4ff5d0aa8/src/views/components/markdown/CodeBlock.js
 class MarkdownEditor extends Component {
-  state = {}
+  static defaultProps = {
+    mode: "markdown",
+    theme: "tomorrow",
+    ///onChange: ...,
+    editorProps: {
+      config
+    }
+  };
+
+  state = {};
 
   render() {
     // see: https:// github.com/securingsincity/react-ace/blob/master/docs/Ace.md#available-props
-    const { value = '' } = this.props;
+    const { value = '', ...props } = this.props;
+    
     return (<AceEditor
       value={value}
-      mode="markdown"
-      theme="tomorrow"
-      onChange={
-        onChange
-      }
-      editorProps={
-        config
-      }
+      {...props}
     />);
   }
 }
