@@ -1,5 +1,11 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### Questions to ask: 
+* How am I doing?
+    * energy level
+    * external stress level
+* getting started + first decision ("of the day")
+
 
 ### How to get here from zero?
 
