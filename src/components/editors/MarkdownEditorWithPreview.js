@@ -13,31 +13,52 @@ import { MUIButton } from '@material-ui/core';
 
 @connect(MarkdownTempStorage)
 class MarkdownEditorWithPreview extends Component {
-  defaultProps = {
+  static defaultProps = {
     // auto save within this amount of milliseconds
     autoSaveThrottleDelay: 1000
   };
   state = {
     source: NotLoaded
   };
+  _lastSavedSource = NotLoaded;
 
-  componentDidUpdate({ markdownTempStorage: markdownTempStorageOld }) {
-    const { markdownTempStorage: markdownTempStorageNew } = this.props;
+  componentDidMount() {
+    this._onUpdate();
+  }
+
+  componentDidUpdate({ sourceName: oldSourceName }) {
     const { sourceName } = this.props;
-    if (sourceName !== markdownTempStorageOld.sourceName || !sourceName) {
+    if (sourceName !== oldSourceName) {
       throw new Error(`Invalid sourceName must not be empty and must not change in ${this.constructor.name}: ${sourceName}`);
     }
-    const source = markdownTempStorageNew.getSource(sourceName);
-    if (markdownTempStorageOld.getSource(sourceName) !== source) {
+
+    this._onUpdate();
+  }
+
+  _onUpdate() {
+    const { sourceName, markdownTempStorage } = this.props;
+    if (!sourceName) {
+      throw new Error(`Invalid sourceName must not be empty and must not change in ${this.constructor.name}: ${sourceName}`);
+    }
+    const { source } = this.state;
+    const remoteSource = markdownTempStorage.getSource(sourceName);
+    //if (remoteSource !== source && remoteSource !== this._lastSavedSource) {
+    if (remoteSource !== source && source === NotLoaded) {
+      // TODO: support real-time remote updates
+      // for now: only take remote source if source was not loaded before
+      //console.log('_onUpdate', remoteSource);
       // source changed in database (or got loaded for the first time)
-      this.setState({source});
+      // (make sure, we ignore the case where the callback got raised for the source we last saved)
+      this.setState({ source: remoteSource });
     }
   }
 
-  save = () => {
+  onEdit = (newSource, ...args) => {
+    console.warn('onEdit', newSource, ...args)
     const { sourceName, markdownTempStorage, autoSaveThrottleDelay } = this.props;
-    let { source } = this.state;
-    markdownTempStorage.saveSourceThrottled(sourceName, source, autoSaveThrottleDelay);
+    this._lastSavedSource = newSource;
+    this.setState({ source: newSource });
+    markdownTempStorage.saveSourceThrottled(sourceName, newSource, autoSaveThrottleDelay);
   };
 
   render() {
@@ -48,16 +69,17 @@ class MarkdownEditorWithPreview extends Component {
     if (source === null) {
       source = '';
     }
+
     return (
       <Flexbox className="full-width" flexDirection="column">
         {/* Editor + Preview */}
         <Flexbox className="full-width" flexDirection="row">
           <Flexbox className="full-width">
-            <MarkdownEditor onChange={this.save} value={source} />
+            <MarkdownEditor onChange={this.onEdit} value={source} />
           </Flexbox>
-          <Flexbox className="full-width">
+          <div className="full-width">
             <MarkdownViewer source={source} />
-          </Flexbox>
+          </div>
         </Flexbox>
 
         {/* Toolbar */}

@@ -12,6 +12,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  overflow-y: scroll;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
@@ -88,6 +92,20 @@ a[role="button"]:hover {
   padding: 0 !important;
 }
 
+
+.color-red {
+  color: red;
+}
+
+.bg-lightgray {
+  background-color: lightgray;
+}
+
+.code {
+  background-color: #EAEAEA !important;
+  /*border: 1px black solid;*/
+}
+
 /**
  * animated-underline
  * @see: http://jsfiddle.net/y4wuurt9/
@@ -105,7 +123,7 @@ a[role="button"]:hover {
   left: 0;
   width: 0;
   height: 3px;
-  background: blue;
+  background: white;
   -webkit-transition: width 250ms ease-in-out;
   -moz-transition: width 250ms ease-in-out;
   -o-transition: width 250ms ease-in-out;

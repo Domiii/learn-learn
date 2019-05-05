@@ -8,7 +8,7 @@ import LearnerLogEntries from 'state/LearnerLogEntries';
 import connect from 'connect';
 
 //import MonacoEditor from 'components/editors/MonacoEditor';
-import MarkdownEditor from 'components/editors/MarkdownEditor';
+import MarkdownEditorWithPreview from 'components/editors/MarkdownEditorWithPreview';
 
 import { Button } from 'reactstrap';
 
@@ -25,13 +25,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 class LearnerLogEntryEditor extends Component {
   render() {
     return (
-      <MarkdownEditor />
+      <MarkdownEditorWithPreview sourceName="tmp" />
     );
   }
 }
 
 class LogEntryAdd extends Component {
-  state = {  };
+  state = { adding: true };
 
   onClickAdd = () => {
     this.setState({adding: !this.state.adding});

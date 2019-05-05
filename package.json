@@ -59,6 +59,7 @@
     "react-moment": "^0.8.4",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
+    "react-syntax-highlighter": "^10.2.1",
     "react-table": "^6.9.2",
     "reactstrap": "^8.0.0",
     "resolve": "1.10.0",

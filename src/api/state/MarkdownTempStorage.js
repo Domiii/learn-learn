@@ -1,10 +1,10 @@
 import FirestoreContainer from 'unstated-ext/FirestoreContainer';
+import loadedValue from 'unstated-ext/loadedValue';
 import throttle from 'lodash/throttle';
 
 export default class MarkdownTempStorage extends FirestoreContainer {
   static n = 'markdownTempStorage';
-
-  state = { _throttled: {} };
+  _throttled = {};
 
   get actions() {
     return {
@@ -31,7 +31,7 @@ export default class MarkdownTempStorage extends FirestoreContainer {
             }, delay, { leading: false });
           }
 
-          // reset countodwn ever time it gets called again
+          // reset countodwn when it gets called again (only save the last version after nothing new came in for delay ms)
           throttled.cancel();
           return throttled(docId, source);
         });
@@ -50,21 +50,25 @@ export default class MarkdownTempStorage extends FirestoreContainer {
   get queries() {
     return {
       byId: {
-        query: this.doc
-      },
-      getSource: {
-        query: docId => {
-          const entry = this.state.byId(docId);
-          if (entry) {
-            return entry.source;
-          }
-          return entry;
-        }
+        query: this.doc,
+        map: snap => snap.data()
       },
       byUser: {
         query: (uid) => {
           return this.collection.where('uid', '==', uid);
         }
+      }
+    };
+  }
+
+  get selectors() {
+    return {
+      getSource: docId => {
+        const entry = this.state.byId(docId);
+        if (entry) {
+          return loadedValue(entry.source);
+        }
+        return entry;
       }
     };
   }

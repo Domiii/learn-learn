@@ -8,6 +8,7 @@ import NotLoaded from 'NotLoaded';
 import ContainerEx from './ContainerEx';
 import isObject from 'lodash/isObject';
 import isFunction from 'lodash/isFunction';
+import loadedValue from './loadedValue';
 
 
 export default class FirestoreContainer extends ContainerEx {
@@ -15,6 +16,22 @@ export default class FirestoreContainer extends ContainerEx {
 
   constructor() {
     super();
+
+    // setup initial state
+    console.warn(this.constructor.initialState);
+    this.state = Object.assign({ _state: true }, this.constructor.initialState);
+
+    setTimeout(() => {
+      // make sure, no one accidentally overrides this.state
+      if (!this.state._state) {
+        throw new Error(this.constructor.n + ': this.state has been overwritten. Make sure not to set state as a class variable in a FirebaseContainer class.');
+      }
+
+      // make sure, no one accidentally sets initialState on instance (should either be static or not exist at all)
+      if (this.initialState) {
+        throw new Error(this.constructor.n + ': Found `initialState` on FirestoreContainer instance, but should be static.');
+      }
+    });
 
     let collectionName;
     if (this.constructor.n) {
@@ -30,12 +47,13 @@ export default class FirestoreContainer extends ContainerEx {
     const {
       actions,
       values,
-      queries
+      queries,
+      selectors
     } = this;
 
     if (actions) {
       // merge actions into `state` as well as into `this`
-      this.state = Object.assign(this.state, actions);
+      Object.assign(this.state, actions);
       Object.assign(this, actions);
     }
 
@@ -44,6 +62,11 @@ export default class FirestoreContainer extends ContainerEx {
     }
     if (queries) {
       this.registerQueries(queries);
+    }
+    if (selectors) {
+      // merge selectors into `state` as well as into `this`
+      Object.assign(this.state, selectors);
+      Object.assign(this, selectors);
     }
   }
 
@@ -93,7 +116,7 @@ export default class FirestoreContainer extends ContainerEx {
               let result;
               if (mapFn) {
                 //const oldState = this.state[name];
-                result = await mapFn(snap);
+                result = loadedValue(await mapFn(snap));
               } else {
                 result = snap;
               }
@@ -129,7 +152,7 @@ export default class FirestoreContainer extends ContainerEx {
       _queryStates
     }) => {
       const queryState = _queryStates[name];
-      queryState[argsPath] = result;
+      queryState.cache[argsPath] = result;
       return {
         _queryStates
       };
@@ -160,15 +183,20 @@ export default class FirestoreContainer extends ContainerEx {
       queryState.loadStatus[argsPath] = true;
 
       const {
+        fullName,
         mapFn
       } = registration;
 
       const ref = query(...args);
 
+      if (!ref || !ref.onSnapshot) {
+        throw new Error(fullName + ' - Query function did not (but must) return a firebase Query, DocumentReference or otherwise implement a corresponding onSnapshot function.');
+      }
+
       const unsub = ref.onSnapshot(async snap => {
         let result;
         if (mapFn) {
-          result = await mapFn(snap, ...args);
+          result = loadedValue(await mapFn(snap, ...args));
         } else {
           result = snap;
         }
@@ -205,6 +233,7 @@ export default class FirestoreContainer extends ContainerEx {
 
       const registration = {
         name,
+        fullName: this.constructor.n + '.queries.' + name,
         query,
         mapFn,
         mergeRoot
