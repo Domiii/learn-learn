@@ -12,6 +12,13 @@ import loadedValue from './loadedValue';
 
 
 export default class FirestoreContainer extends ContainerEx {
+  static defaultQueries = {
+    byId: {
+      query: this.doc,
+      map: snap => snap.data()
+    }
+  };
+
   _registered = new Map();
 
   constructor() {
@@ -51,22 +58,22 @@ export default class FirestoreContainer extends ContainerEx {
       selectors
     } = this;
 
-    if (actions) {
-      // merge actions into `state` as well as into `this`
-      Object.assign(this.state, actions);
-      Object.assign(this, actions);
-    }
-
     if (values) {
       this.registerValues(values);
     }
-    if (queries) {
-      this.registerQueries(queries);
-    }
+    
+    this.registerQueries(queries);
+
     if (selectors) {
       // merge selectors into `state` as well as into `this`
       Object.assign(this.state, selectors);
       Object.assign(this, selectors);
+    }
+
+    if (actions) {
+      // merge actions into `state` as well as into `this`
+      Object.assign(this.state, actions);
+      Object.assign(this, actions);
     }
   }
 
@@ -122,15 +129,17 @@ export default class FirestoreContainer extends ContainerEx {
               }
 
               // set state for given path
-              this.setState({
+              let stateUpd = {
                 [name]: result
-              });
+              };
 
               if (mergeRoot) {
                 // merge back into root
                 const res = await mergeRoot(snap, name, ref);
-                this.setState(res);
+                Object.assign(stateUpd, res);
               }
+
+              this.setState(stateUpd);
             });
 
             // override the proxy call
@@ -212,6 +221,8 @@ export default class FirestoreContainer extends ContainerEx {
 
   registerQueries = config => {
     const _queryStates = {};
+    config = Object.assign({}, this.constructor.defaultQueries, config);
+
     for (let name in config) {
       let {
         query,

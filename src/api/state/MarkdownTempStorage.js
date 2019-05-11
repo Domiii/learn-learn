@@ -6,6 +6,33 @@ export default class MarkdownTempStorage extends FirestoreContainer {
   static n = 'markdownTempStorage';
   _throttled = {};
 
+  get values() {
+    return {
+    };
+  }
+
+  get queries() {
+    return {
+      byUser: {
+        query: (uid) => {
+          return this.collection.where('uid', '==', uid);
+        }
+      }
+    };
+  }
+
+  get selectors() {
+    return {
+      getSource: docId => {
+        const entry = this.state.byId(docId);
+        if (entry) {
+          return loadedValue(entry.source);
+        }
+        return entry;
+      }
+    };
+  }
+  
   get actions() {
     return {
       add: (entry) => {
@@ -38,37 +65,6 @@ export default class MarkdownTempStorage extends FirestoreContainer {
       },
       saveSource: (docId, source) => {
         return this.state.saveAs(docId, { source });
-      }
-    };
-  }
-
-  get values() {
-    return {
-    };
-  }
-
-  get queries() {
-    return {
-      byId: {
-        query: this.doc,
-        map: snap => snap.data()
-      },
-      byUser: {
-        query: (uid) => {
-          return this.collection.where('uid', '==', uid);
-        }
-      }
-    };
-  }
-
-  get selectors() {
-    return {
-      getSource: docId => {
-        const entry = this.state.byId(docId);
-        if (entry) {
-          return loadedValue(entry.source);
-        }
-        return entry;
       }
     };
   }
