@@ -84,7 +84,7 @@ export default function AppRoutes() {
       <UserRoute exact path="/learning-path" Comp={LearnerPathsPage} />
       <AdminRoute exact path="/users" Comp={UserPage} />
 
-      <Route Comp={NotFound404} />
+      <Route Component={NotFound404} />
     </Switch>
   );
 }

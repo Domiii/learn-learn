@@ -1,4 +1,5 @@
 import zipObject from 'lodash/zipObject';
+import mapValues from 'lodash/mapValues';
 
 import {
   db
@@ -19,6 +20,7 @@ export default class FirestoreContainer extends ContainerEx {
     }
   };
 
+  db = db;
   _registered = new Map();
 
   constructor() {
@@ -51,11 +53,12 @@ export default class FirestoreContainer extends ContainerEx {
     this.collectionName = collectionName;
     this.collection = db.collection(collectionName);
 
-    const {
-      actions,
+    let {
       values,
       queries,
-      selectors
+      selectors,
+      actions,
+      refs
     } = this;
 
     if (values) {
@@ -65,15 +68,26 @@ export default class FirestoreContainer extends ContainerEx {
     this.registerQueries(queries);
 
     if (selectors) {
+      // bind to this
+      selectors = mapValues(selectors, f => f.bind(this));
+
       // merge selectors into `state` as well as into `this`
       Object.assign(this.state, selectors);
       Object.assign(this, selectors);
     }
 
     if (actions) {
+      // bind to this
+      actions = mapValues(actions, f => f.bind(this));
+
       // merge actions into `state` as well as into `this`
       Object.assign(this.state, actions);
       Object.assign(this, actions);
+    }
+
+    if (refs) {
+      // assign the return value of the refs getter as "refs" property
+      this.refs = refs;
     }
   }
 

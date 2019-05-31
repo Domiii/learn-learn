@@ -14,4 +14,34 @@
 		],
 		"description": "import_fortawesome_icons"
 	},
+	"firestore_container": {
+		"prefix": "fscont",
+		"body": [
+			"import FirestoreContainer from \"unstated-ext/FirestoreContainer\";",
+			"",
+			"export default class $1 extends FirestoreContainer {",
+			"  get values() {",
+			"    return {",
+			"      all: { ref: this.collection }$2",
+			"    };",
+			"  }",
+			"",
+			"  get queries() {",
+			"    return {",
+			"      $0",
+			"    };",
+			"  }",
+			"",
+			"  get selectors() {",
+			"    return {",
+			"    };",
+			"  }",
+			"",
+			"  get actions() {",
+			"    return {",
+			"    };",
+			"  }",
+			"}"
+		]
+	}
 }
