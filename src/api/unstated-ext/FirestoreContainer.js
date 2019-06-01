@@ -1,6 +1,7 @@
 import zipObject from 'lodash/zipObject';
 import mapValues from 'lodash/mapValues';
 
+import Firebase from 'firebase/app';
 import {
   db
 } from 'api/firebase';
@@ -102,6 +103,19 @@ export default class FirestoreContainer extends ContainerEx {
   registerValues = (config) => {
     const _originalState = this.state || {};
     for (let name in config) {
+      let cfg = config[name];
+      
+      if (cfg.onSnapshot
+        // cfg instanceof Firebase.firestore.DocumentReference ||
+        // cfg instanceof Firebase.firestore.CollectionReference ||
+        // cfg instanceof Firebase.firestore.Query
+      ) {
+        // the actual reference
+        cfg = {
+          ref: cfg
+        }
+      }
+
       let {
         ref,
         map: mapFn,
@@ -170,6 +184,78 @@ export default class FirestoreContainer extends ContainerEx {
     this.state = _originalState;
   }
 
+  registerQueries = config => {
+    const _queryStates = {};
+    config = Object.assign({}, this.constructor.defaultQueries, config);
+
+    for (let name in config) {
+      let cfg = config[name];
+
+      if (isFunction(cfg)) {
+        // only provided the query function
+        cfg = {
+          query: cfg
+        }
+      }
+      else if (cfg.onSnapshot
+        // cfg instanceof Firebase.firestore.DocumentReference ||
+        // cfg instanceof Firebase.firestore.CollectionReference ||
+        // cfg instanceof Firebase.firestore.Query
+      ) {
+        // the actual reference
+        cfg = {
+          query: () => cfg
+        }
+      }
+
+
+      let {
+        query,
+        map: mapFn,
+        mergeRoot
+      } = cfg;
+
+      // make sure, query is a function
+      if (!isFunction(query)) {
+        throw new Error(`Invalid query entry: ${this}.queries.${name}.query is not (but must be) function.`);
+      }
+      query = query.bind(this);
+
+      if (mapFn) {
+        mapFn = mapFn.bind(this);
+      }
+      if (mergeRoot) {
+        mergeRoot = mergeRoot.bind(this);
+      }
+
+      const registration = {
+        name,
+        fullName: this.constructor.n + '.queries.' + name,
+        query,
+        mapFn,
+        mergeRoot
+      };
+
+      // register
+      this._registered.set(name, registration);
+
+      // the actual query will be registered as the queryRead function on the given registration
+      Object.assign(this.state, {
+        [name]: this._queryRead.bind(this, registration)
+      });
+
+      _queryStates[name] = {
+        cache: {},
+        loadStatus: {}
+      };
+    }
+
+    Object.assign(this.state, {
+      // cache is used by queries
+      _queryStates
+    });
+  }
+
   _updateQueryCache(name, argsPath, result) {
     this.setState(({
       _queryStates
@@ -215,7 +301,6 @@ export default class FirestoreContainer extends ContainerEx {
       if (!ref || !ref.onSnapshot) {
         throw new Error(fullName + ' - Query function did not (but must) return a firebase Query, DocumentReference or otherwise implement a corresponding onSnapshot function.');
       }
-
       const unsub = ref.onSnapshot(async snap => {
         let result;
         if (mapFn) {
@@ -231,57 +316,6 @@ export default class FirestoreContainer extends ContainerEx {
       registration.unsub = unsub;
     }
     return queryState.cache[argsPath];
-  }
-
-  registerQueries = config => {
-    const _queryStates = {};
-    config = Object.assign({}, this.constructor.defaultQueries, config);
-
-    for (let name in config) {
-      let {
-        query,
-        map: mapFn,
-        mergeRoot
-      } = config[name];
-
-      if (mapFn) {
-        mapFn = mapFn.bind(this);
-      }
-      if (mergeRoot) {
-        mergeRoot = mergeRoot.bind(this);
-      }
-      // make sure, query is a function
-      if (!isFunction(query)) {
-        throw new Error(`Invalid query entry: ${this}.queries.${name}.query is not (but must be) function.`);
-      }
-      query = query.bind(this);
-
-      const registration = {
-        name,
-        fullName: this.constructor.n + '.queries.' + name,
-        query,
-        mapFn,
-        mergeRoot
-      };
-
-      // register
-      this._registered.set(name, registration);
-
-      // the actual query will be registered as the queryRead function on the given registration
-      Object.assign(this.state, {
-        [name]: this._queryRead.bind(this, registration)
-      });
-
-      _queryStates[name] = {
-        cache: {},
-        loadStatus: {}
-      };
-    }
-
-    Object.assign(this.state, {
-      // cache is used by queries
-      _queryStates
-    });
   }
 
   /**

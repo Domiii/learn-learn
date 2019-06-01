@@ -1,32 +1,39 @@
 import React, { Component } from 'react';
 
+import connect from 'connect';
+
+import Cohorts from 'features/cohorts/api/Cohorts';
+import Users from 'state/Users';
+
 import BootstrapTable from 'react-bootstrap-table-next';
 
+function renderCell(cell, row, rowIndex) {
+  return cell;
+}
+
+const columns = [{
+  dataField: 'name',
+  text: 'Name',
+  sort: true,
+  // formatter: renderUserName
+}];
+
+const defaultSorted = [{
+  dataField: 'name',
+  order: 'desc'
+}];
+
+@connect(Cohorts)
 class CohortUsersTable extends Component {
   render() {
-    const columns = [{
-      dataField: 'id',
-      text: 'Product ID',
-      sort: true
-    }, {
-      dataField: 'name',
-      text: 'Product Name',
-      sort: true
-    }, {
-      dataField: 'price',
-      text: 'Product Price',
-      sort: true
-    }];
+    const { cohorts } = this.props;
 
-    const defaultSorted = [{
-      dataField: 'name',
-      order: 'desc'
-    }];
+    const users = cohorts.;
 
     return (<BootstrapTable
       bootstrap4
       keyField="id"
-      data={products}
+      data={users}
       columns={columns}
       defaultSorted={defaultSorted}
     />);

@@ -43,7 +43,7 @@ export default class CurrentUser extends Container {
       if (!(displayRole <= this.state.role)) {
         return;
       }
-      db.collection('usersPublic').doc(this.state.uid).update({
+      db.collection('users').doc(this.state.uid).update({
         displayRole
       });
     }
@@ -66,7 +66,7 @@ export default class CurrentUser extends Container {
         this.setState(snapData);
       });
 
-      db.collection('usersPublic').doc(user.uid).onSnapshot(snap => {
+      db.collection('users').doc(user.uid).onSnapshot(snap => {
         const pub = selectPublic(user);
         const snapData = snap.data() || {};
         if (needsUpdate(snap, pub, selectPublic)) {
@@ -77,7 +77,7 @@ export default class CurrentUser extends Container {
           if (!snap.exists) {
             obj.createdAt = Firebase.firestore.FieldValue.serverTimestamp();
           }
-          db.collection('usersPublic').doc(user.uid).set(obj, {merge: true});
+          db.collection('users').doc(user.uid).set(obj, {merge: true});
         }
         if (!snapData.displayRole) {
           snapData.displayRole = RoleId.Guest;

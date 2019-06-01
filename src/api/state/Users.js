@@ -1,36 +1,57 @@
+import zipObject from 'lodash/zipObject';
+
 import { db } from 'api/firebase';
 
 import NotLoaded from 'NotLoaded';
 
 import { Container } from 'unstated';
+import { FirestoreContainer } from '../unstated-ext/FirestoreContainers';
 
-export default class Users extends Container {
+export default class Users extends FirestoreContainer {
   static n = 'users';
-  state = {
-    setRole: async (uid, role) => {
-      const userDoc = db.collection('usersPublic').doc(uid);
-      const user = await userDoc.get();
-      const userData = user.data();
-      //let { displayRole } = userData;
 
-      userDoc.update({
-        role,
-        displayRole: role
-      });
+  get values() {
+    return {
+      all: {
+        ref: this.collection,
+        map: snap => {
+          const uids = snap.docs.map(d => d.id);
+          const list = snap.docs.map(d =>
+            Object.assign({ uid: d.id }, d.data())
+          );
+          return {
+            list,
+            byUid: zipObject(uids, list)
+          };
+        }
+      }
     }
-  };
+  }
 
-  constructor() {
-    super();
+  get queries() {
+    return {
+    };
+  }
 
-    this.state.allUsers = NotLoaded;
-    db.collection('usersPublic').onSnapshot(snap => {
-      this.setState({
-        allUsers: snap.docs.map(d =>
-          Object.assign({},
-            d.data(),
-            { uid: d.id }))
-      });
-    });
+  get selectors() {
+    return {
+      getUser(uid) {
+        if (this.state.allUsers === NotLoaded) {
+          return NotLoaded;
+        }
+        return this.state.allUsers;
+      }
+    };
+  }
+
+  get actions() {
+    return {
+      async setRole(uid, role) {
+        return this.doc(uid).update({
+          role,
+          displayRole: role
+        });
+      }
+    };
   }
 }

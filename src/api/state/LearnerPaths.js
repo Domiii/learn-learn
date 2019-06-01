@@ -8,7 +8,7 @@ export default class LearnerPaths extends FirestoreContainer {
       updateA: (id, a) => {
         const upd = { a };
         return this.doc(id).update(upd);
-      },
+      }
     };
   }
 

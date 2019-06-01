@@ -36,7 +36,7 @@ const styles = theme => ({
 @connect(Users, CurrentUser)
 class UserPrivBtn extends Component {
   onClick = () => {
-    const { currentUser,uid, users, priv } = this.props;
+    const { currentUser, uid, users, priv } = this.props;
     if (currentUser.uid === uid) return;
 
     users.setRole(uid, RoleId[priv]);
@@ -63,7 +63,7 @@ class UsersList extends Component {
 
   render() {
     const s = this.props.classes;
-    const { allUsers } = this.props.users;
+    const { all: { list: allUsers } } = this.props.users;
 
     if (!allUsers) {
       return (<Loading centered />);
