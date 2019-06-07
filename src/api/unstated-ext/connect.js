@@ -1,4 +1,6 @@
 /**
+ * A connect decorator for unstated.
+ * @see https://github.com/jamiebuilds/unstated/blob/master/src/unstated.js
  * Based on: https://github.com/fabiospampinato/unstated-with-containers/blob/master/src/index.tsx
  */
 
@@ -6,6 +8,8 @@ import React from 'react';
 import { Subscribe, Container } from 'unstated';
 import zipObject from 'lodash/zipObject';
 import isPlainObject from 'lodash/isPlainObject';
+
+const EmptyArray = Object.freeze([]);
 
 /**
  * HOC decorator for Unstated (behaving similar to Redux's connect).
@@ -30,13 +34,33 @@ export default function unstatedConnect(...input) {
     ContainerTypes = ContainerNames.map(name => config[name]);
   }
   else {
-    throw new Error('Invalid unstatedConnect call: Arguments must be Containers or a single object');
+    throw new Error('Invalid unstatedConnect call: Arguments must be many Containers (varargs) or a single object of many name -> ContainerType');
   }
+
+  const AllContainerTypes = ContainerTypes.concat(
+    ...ContainerTypes.map(Type => 
+      Type.getAllDependenciesRecursively && Type.getAllDependenciesRecursively() || EmptyArray
+    )
+  );
 
   return function unstatedConnectWrapper(WrappedComponent) {
     return class ContainersProvider extends React.Component {
       doRender = (...containers) => {
-        const containerProps = zipObject(ContainerNames, containers.map(c => c.state));
+        // resolve dependencies
+        for (let cont of containers) {
+          const DepTypes = cont.constructor.getAllDependenciesRecursively && cont.constructor.getAllDependenciesRecursively() || EmptyArray;
+          if (DepTypes && !cont.deps) {
+            // assign deps
+            const deps = containers.filter(c => DepTypes.includes(c.constructor));
+            const depNames = deps.map(d => d.constructor.n);
+            cont.deps = zipObject(depNames, deps.map(d => d.state));
+            //console.log('[DEP]', cont.constructor.n, depNames, DepTypes);
+          }
+        }
+
+        // zip up + render
+        containers = containers.map(c => c.state);
+        const containerProps = zipObject(ContainerNames, containers);
         return (
           <WrappedComponent {...containerProps} {...this.props} />
         );
@@ -44,7 +68,7 @@ export default function unstatedConnect(...input) {
 
       render() {
         return (
-          <Subscribe to={ContainerTypes}>
+          <Subscribe to={AllContainerTypes}>
             {this.doRender}
           </Subscribe>
         );

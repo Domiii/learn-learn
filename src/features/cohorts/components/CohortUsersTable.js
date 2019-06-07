@@ -3,41 +3,80 @@ import React, { Component } from 'react';
 import connect from 'connect';
 
 import Cohorts from 'features/cohorts/api/Cohorts';
-import Users from 'state/Users';
+import Users from 'features/users/api/Users';
 
 import BootstrapTable from 'react-bootstrap-table-next';
+import Moment from 'react-moment';
+import renderLoadingIfNotLoaded from '../../../components/renderLoadingIfNotLoaded';
+import UserLabel from '../../users/components/UserLabel';
 
-function renderCell(cell, row, rowIndex) {
-  return cell;
-}
 
-const columns = [{
-  dataField: 'name',
-  text: 'Name',
-  sort: true,
-  // formatter: renderUserName
-}];
+const columns = [
+  {
+    dataField: 'uid',
+    hidden: true
+  },
+  {
+    dataField: 'displayName',
+    text: 'Name',
+    sort: true,
+    formatter: (cell, row) => <UserLabel uid={row.uid} />
+  },
+  {
+    dataField: 'joined',
+    text: 'Joined',
+    sort: true,
+    formatter: (cell, row, rowIndex) => {
+      const date = cell && cell.toDate();
+      return (<>
+        <Moment>{date}</Moment>
+        (<Moment fromNow>{date}</Moment>)
+      </>);
+    }
+  }
+];
 
 const defaultSorted = [{
-  dataField: 'name',
+  dataField: 'joined',
   order: 'desc'
 }];
 
-@connect(Cohorts)
+@connect(Cohorts, Users)
 class CohortUsersTable extends Component {
   render() {
-    const { cohorts } = this.props;
+    const { cohorts, users } = this.props;
 
-    const users = cohorts.;
+    const entries = cohorts.getUserEntriesOfCohort();
+    const loading = renderLoadingIfNotLoaded(entries, { centered: true });
+    if (loading) return loading;
+
+    const uids = Object.keys(entries);
+    const list = uids.map(
+      uid => {
+        const user = users.getUser(uid);
+        if (user) {
+          const {
+            displayName,
+            role
+          } = user;
+          return {
+            uid,
+            joined: entries[uid].createdAt,
+            displayName,
+            role
+          };
+        }
+        return { uid };
+      });
 
     return (<BootstrapTable
       bootstrap4
-      keyField="id"
-      data={users}
+      keyField="uid"
+      data={list}
       columns={columns}
       defaultSorted={defaultSorted}
     />);
   }
 }
- 
+
 export default CohortUsersTable;

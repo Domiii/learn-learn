@@ -1,5 +1,6 @@
 import zipObject from 'lodash/zipObject';
 import isString from 'lodash/isString';
+import isObject from 'lodash/isObject';
 
 export const RoleId = {
   Guest: 0,
@@ -17,15 +18,18 @@ export function getRoleName(roleId) {
   return RoleNameById[roleId] || RoleNameById[RoleId.Guest];
 }
 
-export function hasRole(role, referenceRoleOrName) {
+export function hasRole(userOrRole, referenceRoleOrName) {
+  if (userOrRole && userOrRole.displayRole !== undefined) {
+    userOrRole = userOrRole.displayRole;
+  }
   if (isString(referenceRoleOrName)) {
     if (!RoleId.hasOwnProperty(referenceRoleOrName)) {
       throw new Error('invalid role name: ' + referenceRoleOrName);
     }
     //console.log(role, RoleId[referenceRoleOrName], role >= RoleId[referenceRoleOrName]);
-    return role >= RoleId[referenceRoleOrName];
+    return userOrRole >= RoleId[referenceRoleOrName];
   }
-  return role >= referenceRoleOrName;
+  return userOrRole >= referenceRoleOrName;
 }
 
 export default RoleId;

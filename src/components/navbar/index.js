@@ -27,7 +27,7 @@ import { Button } from 'reactstrap';
 
 import connect from 'connect';
 import CurrentUser from 'state/CurrentUser';
-import Users from 'state/Users';
+import Users from 'features/users/api/Users';
 import { logout } from 'api/auth';
 
 import RoleId, { hasRole } from 'api/roles';
@@ -150,8 +150,9 @@ class MenuAppBar extends React.Component {
         <AppBar position="static">
           <Toolbar>
             <RouteBtn route={'/'}>Home</RouteBtn>
-            <RouteBtn route={'/log'}>My Journey</RouteBtn>
-            <RouteBtn route={'/learning-path'}>Choices</RouteBtn>
+            <RouteBtn route={'/cohorts'}>My Cohorts</RouteBtn>
+            {/* <RouteBtn route={'/log'}>My Journey</RouteBtn>
+            <RouteBtn route={'/learning-path'}>Choices</RouteBtn> */}
             {currentUser.uid && <AdminPages />}
             <div className={classes.grow} />
             {currentUser.uid && (

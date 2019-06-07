@@ -1,11 +1,11 @@
 import Firebase from 'firebase/app';
 import { db } from 'api/firebase';
-import RoleId from 'api/roles';
+import RoleId, { hasRole } from 'api/roles';
 import auth, { onAuthStateChanged } from '../auth';
 
 import isEqual from 'lodash/isEqual';
 
-import { Container } from 'unstated';
+import ContainerEx from 'unstated-ext/ContainerEx';
 
 function selectPrivate(data) {
   const {
@@ -35,7 +35,7 @@ function needsUpdate(snap, current, sel) {
   return !snap.exists;
 }
 
-export default class CurrentUser extends Container {
+export default class CurrentUser extends ContainerEx {
   static n = 'currentUser';
   state = {
     ...auth.currentUser,
@@ -46,6 +46,9 @@ export default class CurrentUser extends Container {
       db.collection('users').doc(this.state.uid).update({
         displayRole
       });
+    },
+    hasRole: (role) => {
+      return hasRole(this.state, role);
     }
   };
 

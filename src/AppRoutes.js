@@ -16,6 +16,7 @@ import LearnerPathsPage from './pages/LearnerPathsPage';
 import NotFound404 from './pages/NotFound404';
 
 import Loading from 'components/Loading';
+import CohortPage from './features/cohorts/components/CohortPage';
 
 @connect({ _currentUser: CurrentUser })
 class UserRoute extends Component {
@@ -23,7 +24,7 @@ class UserRoute extends Component {
     const { Comp, _currentUser, ...otherProps } = this.props;
     //console.log('UserRoute', Comp.name);
     return _currentUser.uid ?
-      <Comp {...props} /> :
+      <Comp {...props} {...otherProps} /> :
       <Redirect to='/login' />;
   };
   render() {
@@ -78,10 +79,13 @@ export default function AppRoutes() {
   return (
     <Switch>
       <NoUserRoute exact path="/login" Comp={Login} />
+      
       <UserRoute exact path="/" Comp={Home} />
       <UserRoute exact path="/log" Comp={LearnerLogPage} />
       <UserRoute exact path="/learner" Comp={LearnerPage} />
       <UserRoute exact path="/learning-path" Comp={LearnerPathsPage} />
+      <UserRoute exact path="/cohorts/:cohortId?" Comp={CohortPage} />
+
       <AdminRoute exact path="/users" Comp={UserPage} />
 
       <Route Component={NotFound404} />

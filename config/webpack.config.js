@@ -271,6 +271,7 @@ module.exports = function(webpackEnv) {
 
         // useful aliases
         'src': path.resolve(__dirname, '../src'),
+        'features': path.resolve(__dirname, '../src/features'),
         'api': path.resolve(__dirname, '../src/api'),
         'state': path.resolve(__dirname, '../src/api/state'),
         'unstated-ext': path.resolve(__dirname, '../src/api/unstated-ext'),

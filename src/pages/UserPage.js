@@ -16,7 +16,7 @@ import Loading from 'components/Loading';
 
 import connect from 'connect';
 import CurrentUser from 'state/CurrentUser';
-import Users from 'state/Users';
+import Users from 'features/users/api/Users';
 
 import { getRoleName, hasRole, RoleId } from 'api/roles';
 
@@ -63,15 +63,17 @@ class UsersList extends Component {
 
   render() {
     const s = this.props.classes;
-    const { all: { list: allUsers } } = this.props.users;
+    const { all } = this.props.users;
 
-    if (!allUsers) {
+    if (!all) {
       return (<Loading centered />);
     }
+    const { list } = all;
+    console.log(this.props.users.all_values);
 
     return (
       <List className={s.root}>
-        {allUsers.map(user => (<ListItem key={user.uid}>
+        {list.map(user => (<ListItem key={user.uid}>
           <Avatar>
             <img className={s.ava} src={user.photoURL} alt="" />
           </Avatar>

@@ -5,9 +5,9 @@ import { db } from 'api/firebase';
 import NotLoaded from 'NotLoaded';
 
 import { Container } from 'unstated';
-import { FirestoreContainer } from '../unstated-ext/FirestoreContainers';
+import FirestoreContainer from 'unstated-ext/FirestoreContainer';
 
-export default class Users extends FirestoreContainer {
+class Users extends FirestoreContainer {
   static n = 'users';
 
   get values() {
@@ -30,16 +30,25 @@ export default class Users extends FirestoreContainer {
 
   get queries() {
     return {
+      userById: this.doc
     };
   }
 
   get selectors() {
     return {
       getUser(uid) {
-        if (this.state.allUsers === NotLoaded) {
+        const user = this.userById(uid);
+        if (user === NotLoaded) {
           return NotLoaded;
         }
-        return this.state.allUsers;
+        return user;
+      },
+      getUserName(uid) {
+        const user = this.userById(uid);
+        if (user === NotLoaded) {
+          return NotLoaded;
+        }
+        return user.displayName;
       }
     };
   }
@@ -55,3 +64,5 @@ export default class Users extends FirestoreContainer {
     };
   }
 }
+
+export default Users;

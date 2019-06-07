@@ -14,11 +14,13 @@ import loadedValue from './loadedValue';
 
 
 export default class FirestoreContainer extends ContainerEx {
-  static defaultQueries = {
-    byId: {
-      query: this.doc,
-      map: snap => snap.data()
-    }
+  get _defaultQueries() {
+    return {
+      byId: {
+        query: this.doc,
+        map: snap => snap.data()
+      }
+    };
   };
 
   db = db;
@@ -28,7 +30,7 @@ export default class FirestoreContainer extends ContainerEx {
     super();
 
     // setup initial state
-    console.warn(this.constructor.initialState);
+    //console.warn(this.constructor.initialState);
     this.state = Object.assign({ _state: true }, this.constructor.initialState);
 
     setTimeout(() => {
@@ -44,7 +46,10 @@ export default class FirestoreContainer extends ContainerEx {
     });
 
     let collectionName;
-    if (this.constructor.n) {
+    if (this.constructor.collectionName) {
+      collectionName = this.constructor.collectionName;
+    }
+    else if (this.constructor.n) {
       // collection name is also the default container name
       collectionName = this.constructor.n;
     } else {
@@ -65,7 +70,7 @@ export default class FirestoreContainer extends ContainerEx {
     if (values) {
       this.registerValues(values);
     }
-    
+
     this.registerQueries(queries);
 
     if (selectors) {
@@ -88,7 +93,7 @@ export default class FirestoreContainer extends ContainerEx {
 
     if (refs) {
       // assign the return value of the refs getter as "refs" property
-      this.refs = refs;
+      Object.defineProperty(this.__proto__, 'refs', { refs })
     }
   }
 
@@ -104,7 +109,7 @@ export default class FirestoreContainer extends ContainerEx {
     const _originalState = this.state || {};
     for (let name in config) {
       let cfg = config[name];
-      
+
       if (cfg.onSnapshot
         // cfg instanceof Firebase.firestore.DocumentReference ||
         // cfg instanceof Firebase.firestore.CollectionReference ||
@@ -143,11 +148,19 @@ export default class FirestoreContainer extends ContainerEx {
       this._registered.set(name, registration);
 
       // register a proxy call
-      Object.defineProperties(_originalState, {
-        [name]: {
+      Object.defineProperty(_originalState, name, {
+          configurable: true,
+          enumerable: true,
           get: () => {
+            //console.warn('getting', name);
+            if (registration.unsub) {
+              // already registered snapshot listeners
+              return registration.value;
+            }
+
             // the first time we access this query, register a listener
             registration.unsub = ref.onSnapshot(async snap => {
+              console.warn('onSnapshot', name, snap.docs && snap.docs.length);
               let result;
               if (mapFn) {
                 //const oldState = this.state[name];
@@ -157,8 +170,9 @@ export default class FirestoreContainer extends ContainerEx {
               }
 
               // set state for given path
+              registration.value = result;
               let stateUpd = {
-                [name]: result
+                [name + '_value']: result
               };
 
               if (mergeRoot) {
@@ -169,16 +183,10 @@ export default class FirestoreContainer extends ContainerEx {
 
               this.setState(stateUpd);
             });
-
-            // override the proxy call
-            this.setState({
-              [name]: NotLoaded
-            });
+            
+            // not loaded on first attempt
             return NotLoaded;
-          },
-          configurable: true,
-          enumerable: true
-        }
+          }
       });
     }
     this.state = _originalState;
@@ -186,10 +194,11 @@ export default class FirestoreContainer extends ContainerEx {
 
   registerQueries = config => {
     const _queryStates = {};
-    config = Object.assign({}, this.constructor.defaultQueries, config);
+    config = Object.assign({}, this._defaultQueries, config);
 
     for (let name in config) {
       let cfg = config[name];
+      //console.log(name, cfg, cfg.query);
 
       if (isFunction(cfg)) {
         // only provided the query function
@@ -217,7 +226,7 @@ export default class FirestoreContainer extends ContainerEx {
 
       // make sure, query is a function
       if (!isFunction(query)) {
-        throw new Error(`Invalid query entry: ${this}.queries.${name}.query is not (but must be) function.`);
+        throw new Error(`Invalid query entry: ${this}.queries.${name}.query is not (but must be) function - ${query}`);
       }
       query = query.bind(this);
 
@@ -240,8 +249,12 @@ export default class FirestoreContainer extends ContainerEx {
       this._registered.set(name, registration);
 
       // the actual query will be registered as the queryRead function on the given registration
+      const queryFn = this._queryRead.bind(this, registration);
+      Object.assign(this, {
+        [name]: queryFn
+      });
       Object.assign(this.state, {
-        [name]: this._queryRead.bind(this, registration)
+        [name]: queryFn
       });
 
       _queryStates[name] = {
