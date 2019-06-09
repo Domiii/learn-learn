@@ -143,3 +143,10 @@ a[role="button"]:hover {
 .btn {
   padding: .3rem .475rem !important;
 }
+
+.gray {
+  color: gray;
+}
+.lightgray {
+  color: lightgray;
+}

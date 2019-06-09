@@ -10,7 +10,9 @@ import { withStyles } from '@material-ui/core';
 
 const styles = {
   icon: {
-    borderRadius: '50%'
+    borderRadius: '50%',
+    maxWidth: '2rem',
+    maxHeight: '2rem'
   }
 };
 
@@ -26,19 +28,21 @@ class UserIcon extends Component {
     const loading = renderLoadingIfNotLoaded(user);
     if (loading) { return loading; }
 
-    const { photoUrl } = user;
+    const { photoURL } = user;
 
     let { customStyles } = this;
     if (!customStyles || (size && parseFloat(size) !== parseFloat(customStyles.maxSize))) {
       if (size && !isString(size)) {
-        size += 'em';
+        size += 'rem';
       }
       customStyles = this.customStyles = {
-        maxSize: size || '1em'
+        maxWidth: size || '2rem',
+        maxHeight: size || '2rem'
       };
     }
 
-    return (<img src={photoUrl} style={customStyles} classNames={s.icon} alt=" " />);
+    const icon = <img src={photoURL} style={customStyles} className={s.icon} alt=" " />;
+    return (<Link to={'/users/' + uid}>{icon}</Link>);
   }
 }
 

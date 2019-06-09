@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 //import logo from './logo.svg';
 import './App.css';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 import AppRoutes from './AppRoutes';
 import Navbar from 'components/navbar';

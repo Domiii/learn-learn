@@ -13,6 +13,8 @@ class UserLabel extends Component {
   render() {
     const { users, uid, iconSize, iconProps, nameProps, ...otherProps } = this.props;
 
+    otherProps.color = otherProps.color || 'primary';
+
     const user = users.getUser(uid);
     const loading = renderLoadingIfNotLoaded(user);
     if (loading) {

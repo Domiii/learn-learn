@@ -7,6 +7,8 @@ import NotLoaded from 'NotLoaded';
 import { Container } from 'unstated';
 import FirestoreContainer from 'unstated-ext/FirestoreContainer';
 
+const EmptyArray = Object.freeze([]);
+
 class Users extends FirestoreContainer {
   static n = 'users';
 
@@ -30,7 +32,10 @@ class Users extends FirestoreContainer {
 
   get queries() {
     return {
-      userById: this.doc
+      userById: {
+        query: this.doc,
+        map: snap => snap.data()
+      }
     };
   }
 
@@ -49,6 +54,19 @@ class Users extends FirestoreContainer {
           return NotLoaded;
         }
         return user.displayName;
+      },
+      getUsersOfIds(uids) {
+        uids = uids || EmptyArray;
+
+        let users = uids.map(uid => this.getUser(uid));
+        if (users.some(user => user === NotLoaded)) {
+          // not done yet
+          return NotLoaded;
+        }
+
+        return users.map((user, i) => (
+          { uid: uids[i], ...user }
+        ));
       }
     };
   }

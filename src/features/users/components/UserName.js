@@ -14,7 +14,7 @@ class UserName extends Component {
     const loading = renderLoadingIfNotLoaded(name);
     if (loading) { return loading; }
 
-    return (<Link to={'/users/' + uid}>{name}</Link>);
+    return name;
   }
 }
 

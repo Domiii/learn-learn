@@ -152,7 +152,7 @@ export default class FirestoreContainer extends ContainerEx {
           configurable: true,
           enumerable: true,
           get: () => {
-            //console.warn('getting', name);
+            //console.warn('GET value', name);
             if (registration.unsub) {
               // already registered snapshot listeners
               return registration.value;
@@ -160,7 +160,7 @@ export default class FirestoreContainer extends ContainerEx {
 
             // the first time we access this query, register a listener
             registration.unsub = ref.onSnapshot(async snap => {
-              console.warn('onSnapshot', name, snap.docs && snap.docs.length);
+              //console.warn('onSnapshot', name, snap.docs && snap.docs.length);
               let result;
               if (mapFn) {
                 //const oldState = this.state[name];
@@ -172,7 +172,7 @@ export default class FirestoreContainer extends ContainerEx {
               // set state for given path
               registration.value = result;
               let stateUpd = {
-                [name + '_value']: result
+                [name]: result
               };
 
               if (mergeRoot) {
@@ -180,6 +180,8 @@ export default class FirestoreContainer extends ContainerEx {
                 const res = await mergeRoot(snap, name, ref);
                 Object.assign(stateUpd, res);
               }
+
+              //console.warn(stateUpd);
 
               this.setState(stateUpd);
             });
@@ -290,29 +292,33 @@ export default class FirestoreContainer extends ContainerEx {
       _queryStates
     } = this.state;
 
+    const {
+      fullName,
+      mapFn
+    } = registration;
+
     // make sure, args kinda check out.
     args.forEach(arg => {
       if (isObject(arg) || isFunction(arg)) {
-        throw new Error(`Invalid call to Firestore query in ${this}: arguments must all be primitives: ` + JSON.stringify(args));
+        throw new Error(`Invalid call to Firestore query in ${fullName}: arguments must all be primitives: ` + JSON.stringify(args));
       }
     });
 
     const queryState = _queryStates[name];
     const argsPath = JSON.stringify(args);
+    if (argsPath.length > 100) {
+      console.warn(`[POSSIBLE PERFORMANCE ISSUE] ${fullName} has a big argument set, length > 100: ${argsPath}`);
+    }
 
     if (!queryState.loadStatus[argsPath]) {
       // first time -> initialize query
       queryState.loadStatus[argsPath] = true;
 
-      const {
-        fullName,
-        mapFn
-      } = registration;
 
       const ref = query(...args);
 
       if (!ref || !ref.onSnapshot) {
-        throw new Error(fullName + ' - Query function did not (but must) return a firebase Query, DocumentReference or otherwise implement a corresponding onSnapshot function.');
+        throw new Error(fullName + ` - Query function did not (but must) return a firebase Query, DocumentReference or otherwise implement a corresponding onSnapshot function.`);
       }
       const unsub = ref.onSnapshot(async snap => {
         let result;
@@ -328,6 +334,8 @@ export default class FirestoreContainer extends ContainerEx {
       // TODO: when unsubbing, also need to reset loadStatus (+ cache)
       registration.unsub = unsub;
     }
+
+    //console.warn(fullName, argsPath, queryState.cache[argsPath]);
     return queryState.cache[argsPath];
   }
 

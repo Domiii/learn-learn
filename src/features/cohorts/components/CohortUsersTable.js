@@ -18,9 +18,9 @@ const columns = [
   },
   {
     dataField: 'displayName',
-    text: 'Name',
+    text: 'User',
     sort: true,
-    formatter: (cell, row) => <UserLabel uid={row.uid} />
+    formatter: (cell, {uid}) => <UserLabel uid={uid} />
   },
   {
     dataField: 'joined',
@@ -29,8 +29,9 @@ const columns = [
     formatter: (cell, row, rowIndex) => {
       const date = cell && cell.toDate();
       return (<>
-        <Moment>{date}</Moment>
-        (<Moment fromNow>{date}</Moment>)
+        <Moment fromNow>{date}</Moment> <span className="gray">(
+          <Moment format="lll">{date}</Moment>
+          )</span>
       </>);
     }
   }
@@ -44,29 +45,32 @@ const defaultSorted = [{
 @connect(Cohorts, Users)
 class CohortUsersTable extends Component {
   render() {
-    const { cohorts, users } = this.props;
+    const { cohorts, users, cohortId } = this.props;
 
-    const entries = cohorts.getUserEntriesOfCohort();
-    const loading = renderLoadingIfNotLoaded(entries, { centered: true });
+    // load cohort user entries
+    const entries = cohorts.getUserEntriesOfCohort(cohortId);
+    let loading = renderLoadingIfNotLoaded(entries, { centered: true });
     if (loading) return loading;
 
+    // load users
     const uids = Object.keys(entries);
-    const list = uids.map(
-      uid => {
-        const user = users.getUser(uid);
-        if (user) {
-          const {
-            displayName,
-            role
-          } = user;
-          return {
-            uid,
-            joined: entries[uid].createdAt,
-            displayName,
-            role
-          };
-        }
-        return { uid };
+    let list = users.getUsersOfIds(uids);
+    loading = renderLoadingIfNotLoaded(list, { centered: true });
+    if (loading) return loading;
+
+    list = list.map(
+      user => {
+        const {
+          uid,
+          displayName,
+          role
+        } = user;
+        return {
+          uid,
+          joined: entries[uid].createdAt,
+          displayName,
+          role
+        };
       });
 
     return (<BootstrapTable

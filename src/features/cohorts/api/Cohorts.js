@@ -4,6 +4,7 @@ import NotLoaded from 'NotLoaded';
 
 import Users from 'features/users/api/Users';
 import CurrentUser from 'api/state/CurrentUser';
+import sleep from '../../../util/sleep';
 
 const MergeTrue = Object.freeze({ merge: true });
 const EmptyArray = Object.freeze([]);
@@ -43,12 +44,30 @@ class Cohorts extends FirestoreContainer {
       cohortUserEntries: cohortId => this.refs.cohortUserEntries.doc(cohortId),
       cohortIdsOfUser: uid => this.refs.cohortIdsOfUser.doc(uid),
       cohortIdsNotOfUser: uid => this.refs.cohortIdsOfUser.where(uid, '==', null),
-      cohortUserEntry: (cohortId, uid) => this.refs.cohortIdsOfUser.doc(uid).where(cohortId, '>=', 1)
+      cohortsByCode: code => this.collection.where('code', '==', code)
     };
   }
 
   get selectors() {
     return {
+      getCohortIdsOfUser(uid) {
+        const snap = this.cohortIdsOfUser(uid);
+        if (snap === NotLoaded) { return NotLoaded; }
+
+        return snap.exists && Object.keys(snap.data()) || EmptyArray;
+      },
+      getCohortIdsWhereNotUser(uid) {
+        const snap = this.cohortIdsNotOfUser(uid);
+        if (snap === NotLoaded) { return NotLoaded; }
+
+        return !snap.empty && Object.keys(snap.data()) || EmptyArray;
+      },
+      getAllCohortIds() {
+        const { all } = this.state;
+        if (all === NotLoaded) { return NotLoaded; }
+
+        return all.docs.map(d => d.id);
+      },
       getCohortName(cohortId) {
         const cohort = this.getCohort(cohortId);
         if (cohort === NotLoaded) { return NotLoaded; }
@@ -67,26 +86,11 @@ class Cohorts extends FirestoreContainer {
 
         return snap.exists && Object.keys(snap.data()) || EmptyArray;
       },
-      getCohortIdsOfUser(uid) {
-        const snap = this.cohortIdsOfUser(uid);
-        if (snap === NotLoaded) { return NotLoaded; }
-
-        return snap.exists && Object.keys(snap.data()) || EmptyArray;
-      },
-      getCohortIdsWhereNotUser(uid) {
-        const snap = this.cohortIdsNotOfUser(uid);
-        if (snap === NotLoaded) { return NotLoaded; }
-
-        return snap.exists && Object.keys(snap.data()) || EmptyArray;
-      },
       getCohortUserEntry(cohortId, uid) {
-        const snap = this.cohortUserEntry(cohortId, uid);
+        const snap = this.cohortUserEntries(cohortId);
         if (snap === NotLoaded) { return NotLoaded; }
 
-        if (snap.docs.length === 0) {
-          return null;
-        }
-        return snap.docs[0].data();
+        return snap.exists && snap.data()[uid] || null;
       },
       getMyCohortIds() {
         const { uid } = this.deps.currentUser;
@@ -99,6 +103,19 @@ class Cohorts extends FirestoreContainer {
         if (uid === NotLoaded) { return NotLoaded; }
 
         return this.getCohortIdsWhereNotUser(uid);
+      },
+      getCohortsOfIds(cohortIds) {
+        cohortIds = cohortIds || EmptyArray;
+
+        let cohorts = cohortIds.map(cohortId => this.getCohort(cohortId));
+        if (cohorts.some(cohort => cohort === NotLoaded)) {
+          // not done yet
+          return NotLoaded;
+        }
+
+        return cohorts.map((cohort, i) => (
+          { cohortId: cohortIds[i], ...cohort }
+        ));
       }
       // getUsersOfCohort(cohortId) {
       //   const { users } = this.deps;
@@ -108,7 +125,31 @@ class Cohorts extends FirestoreContainer {
 
   get actions() {
     return {
-      async createCohort(name) {
+      async joinCohort(code) {
+        const { uid } = this.deps.currentUser;
+        if (!uid) {
+          return null;
+        }
+
+        const snap = await this.collection.where('code', '==', code).get();
+
+        if (snap.empty) {
+          // invalid code
+          return {error: 'Invalid code'};
+        }
+
+        // take id of first match (should not have more than one anyway)
+        const doc = snap.docs[0];
+        const cohortId = doc.id;
+        const expires = doc.data().codeExpiresAt;
+        if (expires && expires.toDate() < new Date()) {
+          // expired
+          return {error:'Code expired'};
+        }
+        return await this.addUserToCohort(cohortId, uid);
+      },
+
+      async addCohort(name) {
         const cohort = {
           name,
           userCount: 0,
@@ -118,7 +159,43 @@ class Cohorts extends FirestoreContainer {
         return this.collection.add(cohort);
       },
 
+      async newCode(cohortId) {
+        const maxAge = 5 * 24 * 60 * 60 * 1000; // 5 days
+        const CodeLength = 8;
+        const Characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+        // see: https://developer.mozilla.org/en-US/docs/Web/API/Window/crypto
+        const expireDate = new Date(Date.now() + maxAge);
+        const codeExpiresAt = Firebase.firestore.Timestamp.fromDate(expireDate);
+        const crypto = window.crypto || window.msCrypto;
+        const array = new Uint32Array(CodeLength);
+        crypto.getRandomValues(array);
+        const result = Array.from(array).map(x => Characters[x % Characters.length]);
+        const code = result.join('');
+        return this.doc(cohortId).update({
+          codeExpiresAt,
+          code
+        });
+      },
+
+      async removeCode(cohortId) {
+        return this.doc(cohortId).update({
+          code: null
+        });
+      },
+
       async addUserToCohort(cohortId, uid) {
+        // make sure, user has not been added already
+        let existingEntry;
+
+        while ((existingEntry = this.getCohortUserEntry(cohortId, uid)) === NotLoaded) {
+          await sleep(50);
+        }
+
+        if (existingEntry) {
+          return { error: 'Already in cohort' };
+        }
+
         // see: https://firebase.google.com/docs/firestore/manage-data/transactions#batched-writes
         const batch = this.db.batch();
 

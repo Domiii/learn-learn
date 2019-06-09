@@ -24,21 +24,20 @@ class CohortBreadCrumbs extends Component {
   }
 }
 
-connect(Cohorts)
+@connect(Cohorts)
 class CohortPanel extends Component {
   state = {}
   render() {
     const { cohortId, cohorts } = this.props;
 
-    const loading = renderLoadingIfNotLoaded(cohorts.getCohort(cohortId));
+    const cohort = cohorts.getCohort(cohortId);
+    const loading = renderLoadingIfNotLoaded(cohort);
     if (loading) return loading;
     
-    return (
-      <div>
+    return (<div className="full-width">
         <CohortBreadCrumbs cohortId={cohortId} />
         <CohortUsersTable cohortId={cohortId} />
-      </div>
-    );
+    </div>);
   }
 }
 

@@ -29,7 +29,7 @@ class UserRoute extends Component {
   };
   render() {
     return (
-      <Route
+      <Route {...this.props}
         render={this.route}
       />
     )
@@ -84,7 +84,7 @@ export default function AppRoutes() {
       <UserRoute exact path="/log" Comp={LearnerLogPage} />
       <UserRoute exact path="/learner" Comp={LearnerPage} />
       <UserRoute exact path="/learning-path" Comp={LearnerPathsPage} />
-      <UserRoute exact path="/cohorts/:cohortId?" Comp={CohortPage} />
+      <UserRoute path="/cohorts/:cohortId?" Comp={CohortPage} />
 
       <AdminRoute exact path="/users" Comp={UserPage} />
 

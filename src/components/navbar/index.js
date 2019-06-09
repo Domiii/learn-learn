@@ -61,7 +61,9 @@ class RouteBtn extends Component {
     const { route, children, ...props } = this.props;
 
     let cl = 'animated-underline';
-    if (this.props.location.pathname === route) {
+    const currentPath = this.props.location.pathname || '/';
+    if ((route.length === 1 && currentPath.length === 1) || 
+      (route.length > 1 && currentPath.startsWith(route))) {
       cl += ' active';
     }
     return (
