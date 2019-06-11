@@ -19,10 +19,14 @@ import CurrentUser from '../../../api/state/CurrentUser';
 @connect(Cohorts)
 class CohortNameCell extends Component {
   render() {
-    const { cohorts, cohortId } = this.props;
+    const { cohorts, cohortId, admin } = this.props;
     const name = cohorts.getCohortName(cohortId);
+    const to = {
+      pathname: '/cohort/' + cohortId,
+      search: admin && 'admin=1' || '' 
+    };
 
-    return (<Link to={'/cohorts/' + cohortId}>{name}</Link>);
+    return (<Link to={to}>{name}</Link>);
   }
 }
 
@@ -35,10 +39,12 @@ class CohortCodeCell extends Component {
   }
   removeCode = () => {
     const { cohorts, cohortId } = this.props;
-    cohorts.removeCode(cohortId);
+    if (window.confirm('Are you sure, you want to disable sign up for this Cohort?')) {
+      cohorts.removeCode(cohortId);
+    }
   }
   render() {
-    const { cohorts, currentUser, cohortId } = this.props;
+    const { cohorts, currentUser, cohortId, admin } = this.props;
     const cohort = cohorts.getCohort(cohortId);
 
     let loading = renderLoadingIfNotLoaded(cohort);
@@ -54,7 +60,7 @@ class CohortCodeCell extends Component {
     }
 
     let btn;
-    if (currentUser.hasRole('Admin')) {
+    if (admin) {
       btn = code ?
         <Button color="danger" onClick={this.removeCode}>X</Button> :
         <Button color="success" onClick={this.newCode}>New</Button>;
@@ -64,12 +70,23 @@ class CohortCodeCell extends Component {
       <span className="gray" >(<Moment fromNow ago>{expireDate}</Moment>)
       </span>
     </>);
+    
+    const codeEl = code ?
+      <Badge color="success">{code}</Badge> :
+      <Badge color="secondary">(sign up disabled)</Badge>;
 
 
     return (<>
-      <Badge color="success">{code}</Badge> {expireEl} {btn}
+      {codeEl} {expireEl} {btn}
     </>);
   }
+}
+
+function columnClasses(cell, row, rowIndex, colIndex) {
+  if (row.selected) {
+    return 'bg-lightyellow';
+  }
+  return '';
 }
 
 const columns = [
@@ -80,15 +97,19 @@ const columns = [
     dataField: 'name',
     text: 'Cohort',
     sort: true,
-    formatter: (cell, row, rowIndex) => <CohortNameCell cohortId={row.cohortId} />
+    classes: columnClasses,
+    formatter: (cell, {cohortId, admin}, rowIndex) => 
+      <CohortNameCell cohortId={cohortId} admin={admin} />
   }, {
     dataField: 'userCount',
     text: 'Users',
-    sort: true
+    sort: true,
+    classes: columnClasses
   }, {
     dataField: 'createdAt',
     text: 'Created',
     sort: true,
+    classes: columnClasses,
     formatter: (createdAt) => {
       const date = createdAt && createdAt.toDate();
       return (<>
@@ -101,12 +122,13 @@ const columns = [
     dataField: 'code',
     text: 'Code',
     sort: true,
+    classes: columnClasses,
     sortFunc: (a, b, order) => {
       if (order === 'asc') return !!a - !!b;
       else return !!b - !!a;
     },
-    formatter: (code, { cohortId }) => {
-      return <CohortCodeCell cohortId={cohortId} />
+    formatter: (code, { cohortId, admin }) => {
+      return <CohortCodeCell cohortId={cohortId} admin={admin} />
     }
   }
 ];
@@ -122,10 +144,10 @@ const defaultProps = {
   defaultSorted
 };
 
-@connect(Cohorts)
+@connect(Cohorts, CurrentUser)
 class CohortTable extends Component {
   render() {
-    let { cohorts, selector } = this.props;
+    let { cohorts, currentUser, selector, admin } = this.props;
     selector = selector || 'getAllCohortIds';
     const getter = cohorts[selector];
     if (!getter) {
@@ -139,15 +161,20 @@ class CohortTable extends Component {
     if (loading) return loading;
 
     // load actual cohorts
-    const list = cohorts.getCohortsOfIds(ids);
-    loading = renderLoadingIfNotLoaded(list, { centered: true });
+    const rows = cohorts.getCohortsOfIds(ids);
+    loading = renderLoadingIfNotLoaded(rows, { centered: true });
     if (loading) return loading;
+
+    rows.forEach(c => {
+      c.selected = c.cohortId === currentUser.cohortId;
+      c.admin = admin && currentUser.hasRole('Admin');
+    });
 
     //console.warn(list);
 
     return (<BootstrapTable
       keyField="cohortId"
-      data={list}
+      data={rows}
       {...defaultProps}
     />);
   }

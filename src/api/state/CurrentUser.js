@@ -47,6 +47,7 @@ export default class CurrentUser extends ContainerEx {
         displayRole
       });
     },
+    
     hasRole: (role) => {
       return hasRole(this.state, role);
     }
@@ -66,6 +67,8 @@ export default class CurrentUser extends ContainerEx {
           }
           db.collection('usersPrivate').doc(user.uid).set(obj, {merge: true});
         }
+        console.log('privateLoaded');
+        this.setState({privateLoaded: true});
         this.setState(snapData);
       });
 
@@ -85,6 +88,8 @@ export default class CurrentUser extends ContainerEx {
         if (!snapData.displayRole) {
           snapData.displayRole = RoleId.Guest;
         }
+        console.log('publicLoaded');
+        this.setState({ publicLoaded: true });
         this.setState(snapData);
       });
     }
@@ -92,6 +97,11 @@ export default class CurrentUser extends ContainerEx {
 
   constructor() {
     super();
+
+    this.state.isLoaded = () => {
+      console.log('get isLoaded');
+      return this.state.privateLoaded && this.state.publicLoaded;
+    };
 
     //console.log('CurrentUser', this.state);
     onAuthStateChanged(user => {

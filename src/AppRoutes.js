@@ -17,6 +17,8 @@ import NotFound404 from './pages/NotFound404';
 
 import Loading from 'components/Loading';
 import CohortPage from './features/cohorts/components/CohortPage';
+import CohortsPage from './features/cohorts/components/CohortsPage';
+import AdminPage from './pages/AdminPage';
 
 @connect({ _currentUser: CurrentUser })
 class UserRoute extends Component {
@@ -84,11 +86,13 @@ export default function AppRoutes() {
       <UserRoute exact path="/log" Comp={LearnerLogPage} />
       <UserRoute exact path="/learner" Comp={LearnerPage} />
       <UserRoute exact path="/learning-path" Comp={LearnerPathsPage} />
-      <UserRoute path="/cohorts/:cohortId?" Comp={CohortPage} />
+      <UserRoute path="/cohorts/:mine?" Comp={CohortsPage} />
+      <UserRoute path="/cohort/:cohortId?" Comp={CohortPage} />
 
       <AdminRoute exact path="/users" Comp={UserPage} />
+      <AdminRoute exact path="/admin" Comp={AdminPage} />
 
-      <Route Component={NotFound404} />
+      <Route component={NotFound404} />
     </Switch>
   );
 }

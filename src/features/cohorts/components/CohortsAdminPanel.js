@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Card, CardHeader, CardBody, Collapse, Button  } from 'reactstrap';
+import { Card, CardHeader, CardBody, Collapse, Button } from 'reactstrap';
 
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,15 +10,15 @@ import connect from 'connect';
 import CurrentUser from 'api/state/CurrentUser';
 import Cohorts from '../api/Cohorts';
 
-const cardStyle = { 
-  marginBottom: '1rem' 
+const cardStyle = {
+  marginBottom: '1rem'
 };
 
 @connect(Cohorts)
 class AddCohortButton extends Component {
   onClick = evt => {
-    const name = prompt('Please enter new Cohort\'s name');
-    
+    const name = window.prompt('Please enter new Cohort\'s name');
+
     if (name) {
       const { cohorts } = this.props;
       cohorts.addCohort(name);
@@ -35,7 +35,8 @@ class AddCohortButton extends Component {
 }
 
 class CohortsAdminPanel extends Component {
-  state = {}
+  state = { collapse: 1 };
+  
   toggle = (e) => {
     let event = e.target.dataset.event;
     const collapse = this.state.collapse === Number(event) ? 0 : Number(event);
@@ -46,10 +47,10 @@ class CohortsAdminPanel extends Component {
     const { collapse } = this.state;
     const key = 1;
     return (<Card style={cardStyle} key={key}>
-      <CardHeader onClick={this.toggle} data-event={key}>Cohort Admin</CardHeader>
+      <CardHeader onClick={this.toggle} data-event={key}>Cohorts Admin</CardHeader>
       <Collapse isOpen={collapse === key}>
         <CardBody>
-          <CohortTable />
+          <CohortTable admin={true} />
           <AddCohortButton />
         </CardBody>
       </Collapse>

@@ -150,3 +150,19 @@ a[role="button"]:hover {
 .lightgray {
   color: lightgray;
 }
+.bg-lightyellow {
+  background-color: lightyellow
+}
+
+.space-1 {
+  width: 1rem;
+  height: 1rem;
+}
+.space-2 {
+  width: 2rem;
+  height: 2rem;
+}
+
+.inline-block {
+  display: inline-block;
+}

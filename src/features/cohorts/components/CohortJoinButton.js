@@ -13,7 +13,7 @@ class CohortJoinButton extends Component {
   onClick = async evt => {
     const { cohorts } = this.props;
     this.setState({ busy: true });
-    const code = prompt('Please enter a Cohort code');
+    const code = window.prompt('Please enter a Cohort code');
     if (!code) {
       return;
     }

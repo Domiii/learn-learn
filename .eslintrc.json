@@ -2,6 +2,7 @@
   "extends": "react-app",
   "rules": {
     "no-unused-vars": "off",
+    "no-restricted-globals": "off",
     "default-case": "off",
     "no-mixed-operators": "off"
   }

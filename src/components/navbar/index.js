@@ -22,7 +22,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 
 
-import { Button } from 'reactstrap';
+import { Button, Badge } from 'reactstrap';
 
 
 import connect from 'connect';
@@ -32,6 +32,7 @@ import { logout } from 'api/auth';
 
 import RoleId, { hasRole } from 'api/roles';
 import { blue, pink, white } from '@material-ui/core/colors';
+import Cohorts from '../../features/cohorts/api/Cohorts';
 
 const styles = {
   root: {
@@ -58,11 +59,13 @@ const styles = {
 class RouteBtn extends Component {
   render() {
     const s = this.props.classes;
-    const { route, children, ...props } = this.props;
+    const { route, children, activeRoutes, ...props } = this.props;
+
+    // TODO: fix active based on any of multiple activeRoutes (instead of only the single `route`)
 
     let cl = 'animated-underline';
     const currentPath = this.props.location.pathname || '/';
-    if ((route.length === 1 && currentPath.length === 1) || 
+    if ((route.length === 1 && currentPath.length === 1) ||
       (route.length > 1 && currentPath.startsWith(route))) {
       cl += ' active';
     }
@@ -89,6 +92,7 @@ class AdminPages extends React.Component {
     return (<>
       <div className="divider-vertical" />
       <RouteBtn route={'/users'}>Users</RouteBtn>
+      <RouteBtn route={'/admin'}><Badge color="danger">Dev</Badge></RouteBtn>
     </>);
   }
 }
@@ -126,7 +130,7 @@ class AdminTools extends React.Component {
   }
 }
 
-@connect(CurrentUser)
+@connect(CurrentUser, Cohorts)
 class MenuAppBar extends React.Component {
   state = {
     auth: true,
@@ -142,9 +146,13 @@ class MenuAppBar extends React.Component {
   };
 
   render() {
-    const { classes, currentUser } = this.props;
+    const { classes, currentUser, cohorts } = this.props;
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
+
+    const { cohortId } = currentUser;
+    const cohortPath = cohortId ? '/cohort/' + cohortId : '/cohorts';
+    const cohortsTitle = cohortId && cohorts.getCohortName(cohortId) || 'My Cohorts';
 
     return (
       <div className={classes.root}>
@@ -152,7 +160,7 @@ class MenuAppBar extends React.Component {
         <AppBar position="static">
           <Toolbar>
             <RouteBtn route={'/'}>Home</RouteBtn>
-            <RouteBtn route={'/cohorts'}>My Cohorts</RouteBtn>
+            <RouteBtn route={cohortPath}>{cohortsTitle}</RouteBtn>
             {/* <RouteBtn route={'/log'}>My Journey</RouteBtn>
             <RouteBtn route={'/learning-path'}>Choices</RouteBtn> */}
             {currentUser.uid && <AdminPages />}

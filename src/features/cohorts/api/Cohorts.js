@@ -78,7 +78,7 @@ class Cohorts extends FirestoreContainer {
         const snap = this.cohortUserEntries(cohortId);
         if (snap === NotLoaded) { return NotLoaded; }
 
-        return snap.data();
+        return snap.data() || EmptyObject;
       },
       getUidsOfCohort(cohortId) {
         const snap = this.cohortUserEntries(cohortId);
@@ -89,6 +89,8 @@ class Cohorts extends FirestoreContainer {
       getCohortUserEntry(cohortId, uid) {
         const snap = this.cohortUserEntries(cohortId);
         if (snap === NotLoaded) { return NotLoaded; }
+
+        console.warn(snap, snap.data(), uid, snap.exists && snap.data()[uid] || null);
 
         return snap.exists && snap.data()[uid] || null;
       },
@@ -125,6 +127,7 @@ class Cohorts extends FirestoreContainer {
 
   get actions() {
     return {
+      // let currentUser join cohort
       async joinCohort(code) {
         const { uid } = this.deps.currentUser;
         if (!uid) {
@@ -135,7 +138,7 @@ class Cohorts extends FirestoreContainer {
 
         if (snap.empty) {
           // invalid code
-          return {error: 'Invalid code'};
+          return { error: 'Invalid code' };
         }
 
         // take id of first match (should not have more than one anyway)
@@ -144,11 +147,22 @@ class Cohorts extends FirestoreContainer {
         const expires = doc.data().codeExpiresAt;
         if (expires && expires.toDate() < new Date()) {
           // expired
-          return {error:'Code expired'};
+          return { error: 'Code expired' };
         }
         return await this.addUserToCohort(cohortId, uid);
       },
 
+      // let currentUser leave cohort
+      async leaveCohort(cohortId) {
+        const { uid } = this.deps.currentUser;
+        if (!uid) {
+          return null;
+        }
+
+        return await this.removeUserFromCohort(cohortId, uid);
+      },
+
+      // create new cohort
       async addCohort(name) {
         const cohort = {
           name,
@@ -187,11 +201,9 @@ class Cohorts extends FirestoreContainer {
       async addUserToCohort(cohortId, uid) {
         // make sure, user has not been added already
         let existingEntry;
-
         while ((existingEntry = this.getCohortUserEntry(cohortId, uid)) === NotLoaded) {
           await sleep(50);
         }
-
         if (existingEntry) {
           return { error: 'Already in cohort' };
         }
@@ -206,23 +218,44 @@ class Cohorts extends FirestoreContainer {
           }
         }
 
-        const increment = Firebase.firestore.FieldValue.increment(1);
+        const Increment = Firebase.firestore.FieldValue.increment(1);
 
         batch.set(this.refs.cohortUserEntries.doc(cohortId), entry, MergeTrue);
         batch.set(this.refs.cohortIdsOfUser.doc(uid), { [cohortId]: 1 }, MergeTrue);
-        batch.set(this.doc(cohortId), { userCount: increment }, MergeTrue);
+        batch.set(this.doc(cohortId), { userCount: Increment }, MergeTrue);
 
-        return await batch.commit();
+        batch.set(this.db.collection('users').doc(uid), { cohortId }, MergeTrue);
+
+        await batch.commit();
+        
+        return { success: 1 };
       },
 
       async removeUserFromCohort(cohortId, uid) {
+        // make sure, user has been added
+        let existingEntry;
+        while ((existingEntry = this.getCohortUserEntry(cohortId, uid)) === NotLoaded) {
+          await sleep(50);
+        }
+        if (!existingEntry) {
+          return { error: 'Not in cohort' };
+        }
+
+        // do it
         const batch = this.db.batch();
 
-        batch.delete(this.refs.cohortUserEntries.doc(cohortId));
-        batch.delete(this.refs.cohortIdsOfUser.doc(uid));
-        batch.delete(this.doc(cohortId));
+        const Decrement = Firebase.firestore.FieldValue.increment(-1);
+        const Del = Firebase.firestore.FieldValue.delete();  // see: https://stackoverflow.com/a/46984847
 
-        return await batch.commit();
+        batch.update(this.refs.cohortUserEntries.doc(cohortId), { [uid]: Del });
+        batch.update(this.refs.cohortIdsOfUser.doc(uid), { [cohortId]: Del });
+        batch.update(this.doc(cohortId), { userCount: Decrement });
+
+        batch.update(this.db.collection('users').doc(uid), { cohortId: Del });
+
+        await batch.commit();
+
+        return { success: 1 };
       }
     };
   }

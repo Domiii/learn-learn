@@ -7,20 +7,19 @@ import connect from 'connect';
 import CurrentUser from 'api/state/CurrentUser';
 
 //@connect(CurrentUser)
-class CohortPage extends Component {
+class CohortsPage extends Component {
   state = {}
   render() {
-    const { match: { params: { cohortId } } } = this.props;
+    //const { match: { params: { mine } } } = this.props;
 
-    // TODO: check if you are in this cohort
-
-    if (cohortId) {
-      return <CohortPanel cohortId={cohortId} />;
-    }
-    else {
+    // if (cohortId) {
+    //   return <CohortPanel cohortId={cohortId} />;
+    // }
+    // else 
+    {
       return (<CohortsPanel />);
     }
   }
 }
 
-export default CohortPage;
+export default CohortsPage;

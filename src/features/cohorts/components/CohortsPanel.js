@@ -12,14 +12,15 @@ class CohortPage extends Component {
   render() {
     const { currentUser } = this.props;
     return (<div className="full-width">
+      <h2>My Cohorts</h2>
       <CohortTable selector="getMyCohortIds" />
       <div>
         <CohortJoinButton />
       </div>
-      {currentUser.hasRole('Admin') && <>
+      {/* {currentUser.hasRole('Admin') && <>
         <hr />
         <CohortsAdminPanel />
-      </>}
+      </>} */}
     </div>);
   }
 }
