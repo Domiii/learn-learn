@@ -6,8 +6,16 @@
 		],
 		"description": "import_Reactstrap_components"
 	},
-	"import_fortawesome_icons": {
-		"prefix": "irt.fortawesome",
+	"import_fortawesome_icon": {
+		"prefix": "irt.icon",
+		"body": [
+			"import { $1 } from '@fortawesome/free-solid-svg-icons';",
+			"import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';$0"
+		],
+		"description": "import_fortawesome_icons"
+	},
+	"import_fortawesome_icon_full": {
+		"prefix": "irt.icon.full",
 		"body": [
 			"import { $1 } from '@fortawesome/free-solid-svg-icons';",
 			"import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';$0"
@@ -19,16 +27,23 @@
 		"body": [
 			"import FirestoreContainer from \"unstated-ext/FirestoreContainer\";",
 			"",
-			"export default class $1 extends FirestoreContainer {",
+			"class $1 extends FirestoreContainer {",
+			"  static n = '${1/(.*)/${1:/downcase}/g}';",
+			"  get refs() {",
+			"    return {",
+			"      $0",
+			"    };",
+			"  }",
+			"",
 			"  get values() {",
 			"    return {",
-			"      all: { ref: this.collection }$2",
+			"      all: { ref: this.collection }",
 			"    };",
 			"  }",
 			"",
 			"  get queries() {",
 			"    return {",
-			"      $0",
+			"      ",
 			"    };",
 			"  }",
 			"",
@@ -41,7 +56,8 @@
 			"    return {",
 			"    };",
 			"  }",
-			"}"
+			"}",
+			"export default $1;"
 		]
 	}
 }
