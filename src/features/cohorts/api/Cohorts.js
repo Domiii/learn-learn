@@ -107,17 +107,9 @@ class Cohorts extends FirestoreContainer {
         return this.getCohortIdsWhereNotUser(uid);
       },
       getCohortsOfIds(cohortIds) {
-        cohortIds = cohortIds || EmptyArray;
-
-        let cohorts = cohortIds.map(cohortId => this.getCohort(cohortId));
-        if (cohorts.some(cohort => cohort === NotLoaded)) {
-          // not done yet
-          return NotLoaded;
-        }
-
-        return cohorts.map((cohort, i) => (
-          { cohortId: cohortIds[i], ...cohort }
-        ));
+        return this.constructor.loadFromIds(
+          cohortIds, 'cohortId', this.getCohort
+        );
       }
       // getUsersOfCohort(cohortId) {
       //   const { users } = this.deps;
@@ -163,7 +155,7 @@ class Cohorts extends FirestoreContainer {
       },
 
       // create new cohort
-      async addCohort(name) {
+      async createCohort(name) {
         const cohort = {
           name,
           userCount: 0,

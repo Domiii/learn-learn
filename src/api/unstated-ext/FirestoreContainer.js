@@ -12,8 +12,28 @@ import isObject from 'lodash/isObject';
 import isFunction from 'lodash/isFunction';
 import loadedValue from './loadedValue';
 
+const MergeTrue = Object.freeze({ merge: true });
+const EmptyArray = Object.freeze([]);
+const EmptyObject = Object.freeze({});
 
 export default class FirestoreContainer extends ContainerEx {
+  static SelectorFunctions = {
+    // this.constructor.loadFromIds(cohortIds, 'cohortId', this.getCohort, )
+    loadFromIds(ids, idName, getById) {
+      ids = ids || EmptyArray;
+
+      let entries = ids.map(id => getById(id));
+      if (entries.some(cohort => cohort === NotLoaded)) {
+        // not done yet
+        return NotLoaded;
+      }
+
+      return entries.map((obj, i) => (
+        { [idName]: ids[i], ...obj }
+      ));
+    }
+  };
+
   get _defaultQueries() {
     return {
       byId: {
@@ -21,7 +41,7 @@ export default class FirestoreContainer extends ContainerEx {
         map: snap => snap.data()
       }
     };
-  };
+  }
 
   db = db;
   _registered = new Map();
@@ -31,7 +51,8 @@ export default class FirestoreContainer extends ContainerEx {
 
     // setup initial state
     //console.warn(this.constructor.initialState);
-    this.state = Object.assign({ _state: true }, this.constructor.initialState);
+    this.state = Object.assign({ _state: true }, 
+      this.constructor.initialState);
 
     setTimeout(() => {
       // make sure, no one accidentally overrides this.state

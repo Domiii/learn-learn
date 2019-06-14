@@ -71,7 +71,7 @@ it('can create cohorts', async () => {
   allCohortsArray = await waitForValueChange(() => cohorts.allCohortsArray, allCohortsArray);
 
   // add cohort
-  const cohortDoc = await cohorts.addCohort('testCohort' + allCohortsArray.length);
+  const cohortDoc = await cohorts.createCohort('testCohort' + allCohortsArray.length);
 
   // new cohort must be in array
   let newCohorts = await waitForValueChange(() => cohorts.allCohortsArray, allCohortsArray);
