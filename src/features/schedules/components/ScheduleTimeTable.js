@@ -31,18 +31,9 @@ class ScheduleNameCell extends Component {
 }
 
 
+
 @connect(Schedules, CurrentUser)
 class ScheduleCodeCell extends Component {
-  newCode = () => {
-    const { schedules, scheduleId } = this.props;
-    schedules.newCode(scheduleId);
-  }
-  removeCode = () => {
-    const { schedules, scheduleId } = this.props;
-    if (window.confirm('Are you sure, you want to disable sign up for this Schedule?')) {
-      schedules.removeCode(scheduleId);
-    }
-  }
   render() {
     const { schedules, currentUser, scheduleId, admin } = this.props;
     const schedule = schedules.getSchedule(scheduleId);
@@ -145,33 +136,26 @@ const defaultProps = {
 };
 
 @connect(Schedules, CurrentUser)
-class ScheduleTable extends Component {
+class ScheduleTimeTable extends Component {
   render() {
-    let { schedules, currentUser, where, admin } = this.props;
+    let { schedules, currentUser, scheduleId, admin } = this.props;
 
-    // load ids
-    const ids = schedules.getAllScheduleIdsWhere(where);
-    let loading = renderLoadingIfNotLoaded(ids, { centered: true });
-    if (loading) return loading;
-
-    // load actual schedules
-    const rows = schedules.getSchedulesOfIds(ids);
-    loading = renderLoadingIfNotLoaded(rows, { centered: true });
+    // load times
+    const rows = schedules.getScheduleTimes(scheduleId);
+    let loading = renderLoadingIfNotLoaded(rows, { centered: true });
     if (loading) return loading;
 
     rows.forEach(c => {
-      c.selected = c.scheduleId === currentUser.scheduleId;
+      
       c.admin = admin && currentUser.hasRole('Admin');
     });
 
-    //console.warn(list);
-
     return (<BootstrapTable
-      keyField="scheduleId"
+      keyField="id"
       data={rows}
       {...defaultProps}
     />);
   }
 }
 
-export default ScheduleTable;
+export default ScheduleTimeTable;

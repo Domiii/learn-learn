@@ -10,6 +10,15 @@ const MergeTrue = Object.freeze({ merge: true });
 const EmptyArray = Object.freeze([]);
 const EmptyObject = Object.freeze({});
 
+function genRandomString(len, chrs) {
+  chrs = chrs || 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const crypto = window.crypto || window.msCrypto;
+  const array = new Uint32Array(len);
+  crypto.getRandomValues(array);
+  const result = Array.from(array).map(x => chrs[x % chrs.length]);
+  return result.join('');
+}
+
 class Cohorts extends FirestoreContainer {
   static n = 'cohorts';
   static Dependencies = [CurrentUser, Users];
@@ -107,7 +116,7 @@ class Cohorts extends FirestoreContainer {
         return this.getCohortIdsWhereNotUser(uid);
       },
       getCohortsOfIds(cohortIds) {
-        return this.constructor.loadFromIds(
+        return this.SelectorFunctions.loadFromIds(
           cohortIds, 'cohortId', this.getCohort
         );
       }
@@ -168,16 +177,12 @@ class Cohorts extends FirestoreContainer {
       async newCode(cohortId) {
         const maxAge = 5 * 24 * 60 * 60 * 1000; // 5 days
         const CodeLength = 8;
-        const Characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
         // see: https://developer.mozilla.org/en-US/docs/Web/API/Window/crypto
         const expireDate = new Date(Date.now() + maxAge);
         const codeExpiresAt = Firebase.firestore.Timestamp.fromDate(expireDate);
-        const crypto = window.crypto || window.msCrypto;
-        const array = new Uint32Array(CodeLength);
-        crypto.getRandomValues(array);
-        const result = Array.from(array).map(x => Characters[x % Characters.length]);
-        const code = result.join('');
+        const code = genRandomString(CodeLength);
+        
         return this.doc(cohortId).update({
           codeExpiresAt,
           code

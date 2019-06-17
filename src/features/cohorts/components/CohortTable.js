@@ -72,7 +72,7 @@ class CohortCodeCell extends Component {
     </>);
     
     const codeEl = code ?
-      <Badge color="success">{code}</Badge> :
+      <h4 className="inline-block"><Badge color="success">{code}</Badge></h4> :
       <Badge color="secondary">(sign up disabled)</Badge>;
 
 

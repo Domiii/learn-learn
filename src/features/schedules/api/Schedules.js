@@ -16,7 +16,7 @@ class Schedules extends FirestoreContainer {
 
   get refs() {
     return {
-
+      times: this.db.collection('times')
     }
   }
 
@@ -42,7 +42,17 @@ class Schedules extends FirestoreContainer {
         map(snap) {
           return snap.docs;
         }
-      }
+      },
+
+      getScheduleTimes: {
+        query: (scheduleId) => this.ref.times.where('scheduleId', '==', scheduleId),
+        map: (snapshot) => snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+        // ({
+        //   list: snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+        // })
+      },
+
+
     };
   }
 
@@ -61,14 +71,26 @@ class Schedules extends FirestoreContainer {
 
   get actions() {
     return {
-      async createSchedule(name, moreProps) {
+      async createSchedule(name) {
         const schedule = {
           name,
-          createdAt: Firebase.firestore.FieldValue.serverTimestamp(),
-          ...moreProps
+          createdAt: Firebase.firestore.FieldValue.serverTimestamp()
         };
 
         return this.collection.add(schedule);
+      },
+
+      async createScheduleTime({ scheduleId, when, nRepeats, exceptions, duration, period }) {
+        const time = {
+          scheduleId,
+          when,
+          nRepeats,
+          exceptions, 
+          duration, 
+          period
+        };
+
+        return this.refs.times.add(time);
       },
 
       getSchedulesOfIds(scheduleIds) {

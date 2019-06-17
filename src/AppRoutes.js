@@ -49,7 +49,7 @@ class NoUserRoute extends Component {
   };
   render() {
     return (
-      <Route
+      <Route {...this.props}
         render={this.route}
       />
     )
@@ -70,7 +70,7 @@ class AdminRoute extends Component {
   };
   render() {
     return (
-      <Route
+      <Route {...this.props}
         render={this.route}
       />
     );
@@ -90,7 +90,7 @@ export default function AppRoutes() {
       <UserRoute path="/cohort/:cohortId?" Comp={CohortPage} />
 
       <AdminRoute exact path="/users" Comp={UserPage} />
-      <AdminRoute exact path="/admin" Comp={AdminPage} />
+      <AdminRoute path="/admin/:category?" Comp={AdminPage} />
 
       <Route component={NotFound404} />
     </Switch>

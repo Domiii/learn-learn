@@ -17,7 +17,7 @@ const EmptyArray = Object.freeze([]);
 const EmptyObject = Object.freeze({});
 
 export default class FirestoreContainer extends ContainerEx {
-  static SelectorFunctions = {
+  SelectorFunctions = {
     // this.constructor.loadFromIds(cohortIds, 'cohortId', this.getCohort, )
     loadFromIds(ids, idName, getById) {
       ids = ids || EmptyArray;
@@ -42,8 +42,6 @@ export default class FirestoreContainer extends ContainerEx {
       }
     };
   }
-
-  db = db;
   _registered = new Map();
 
   constructor() {
@@ -124,6 +122,19 @@ export default class FirestoreContainer extends ContainerEx {
 
   doc = id => {
     return this.collection.doc(id);
+  }
+
+  defaultQueryMap = snap => {
+    if (snap instanceof Firebase.firestore.QuerySnapshot) {
+      // array of docs
+      // https://firebase.google.com/docs/reference/js/firebase.firestore.QuerySnapshot
+      return snap.docs;
+    }
+    else {
+      // a single doc's data
+      // https://firebase.google.com/docs/reference/js/firebase.firestore.DocumentSnapshot
+      return snap.data();
+    }
   }
 
   registerValues = (config) => {
