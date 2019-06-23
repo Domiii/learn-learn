@@ -141,7 +141,7 @@ class ScheduleTimeTable extends Component {
     let { schedules, currentUser, scheduleId, admin } = this.props;
 
     // load times
-    const rows = schedules.getScheduleTimes(scheduleId);
+    const rows = schedules.scheduleTimes(scheduleId);
     let loading = renderLoadingIfNotLoaded(rows, { centered: true });
     if (loading) return loading;
 

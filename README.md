@@ -65,13 +65,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
     1. TODO
 
 
-## Basics
-1. Display a list of things
+## Basic Features?
 1. Read, edit and display markdown
     * https://github.com/rexxars/react-markdown
     * https://glitch.com/edit/#!/markdown-test
-
-## Features?
 1. User list + management
 1. Cohorts
 1. Make + keep a list of notes
@@ -80,10 +77,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
   * Related: https://devhints.io/
 
 
-
-* New ideas
+## Misc
+* more ideas
   * 網站開發課綱： https://gist.github.com/Domiii/707257ceaa13d76ab6f743a1bae95e21
-  * https://stripe.com/docs/payments
 
 * Allow to quickly tab through the entire thing
 * Proper outcome + expectation of what you can get out of this:

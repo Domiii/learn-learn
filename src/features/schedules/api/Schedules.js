@@ -22,7 +22,10 @@ class Schedules extends FirestoreContainer {
 
   get values() {
     return {
-      all: { ref: this.collection }
+      schedulesArray: { 
+        ref: this.collection,
+        map: snap => snap.docs.map(d => ({ scheduleId: d.id, ...d.data() }))
+      }
     };
   }
 
@@ -44,15 +47,38 @@ class Schedules extends FirestoreContainer {
         }
       },
 
-      getScheduleTimes: {
-        query: (scheduleId) => this.ref.times.where('scheduleId', '==', scheduleId),
-        map: (snapshot) => snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      scheduleById: {
+        query: this.doc,
+        map: snap => snap.data() || null
+      },
+
+      scheduleTimes: {
+        query: (scheduleId, orderBy) => {
+          let ref = this.ref.times.where('scheduleId', '==', scheduleId);
+          if (orderBy) {
+            ref = ref.orderBy(orderBy);
+          }
+          return ref;
+        },
+        map: (snapshot) => 
+          snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
         // ({
         //   list: snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
         // })
       },
 
+      getScheduleStartTime: {
+        query: (scheduleId) => {
+          // get all times of schedule
+          return this.ref.times.where('scheduleId', '==', scheduleId);
+        },
+        map: snap => {
 
+          for (const doc of snap.docs) {
+            
+          }
+        }
+      }
     };
   }
 
@@ -65,6 +91,12 @@ class Schedules extends FirestoreContainer {
         }
 
         return docs.map(doc => doc.id);
+      },
+
+      getSchedulesOfIds(scheduleIds) {
+        return this.constructor.loadFromIds(
+          scheduleIds, 'scheduleId', this.getSchedule
+        );
       }
     };
   }
@@ -80,23 +112,17 @@ class Schedules extends FirestoreContainer {
         return this.collection.add(schedule);
       },
 
-      async createScheduleTime({ scheduleId, when, nRepeats, exceptions, duration, period }) {
+      async createScheduleTime({ scheduleId, startTime, nRepeats, exceptions, duration, period }) {
         const time = {
           scheduleId,
-          when,
+          startTime,
           nRepeats,
-          exceptions, 
-          duration, 
-          period
+          exceptions,
+          period,
+          duration
         };
 
         return this.refs.times.add(time);
-      },
-
-      getSchedulesOfIds(scheduleIds) {
-        return this.constructor.loadFromIds(
-          scheduleIds, 'scheduleId', this.getSchedule
-        );
       }
     };
   }

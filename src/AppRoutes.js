@@ -90,6 +90,7 @@ export default function AppRoutes() {
       <UserRoute path="/cohort/:cohortId?" Comp={CohortPage} />
 
       <AdminRoute exact path="/users" Comp={UserPage} />
+      <AdminRoute path="/admin/schedule/:scheduleId" Comp={SchedulePage} />
       <AdminRoute path="/admin/:category?" Comp={AdminPage} />
 
       <Route component={NotFound404} />
