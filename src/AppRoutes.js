@@ -7,18 +7,20 @@ import NotLoaded from 'NotLoaded';
 
 import RoleId from 'api/roles';
 
+import Loading from 'components/Loading';
+
 import Login from './pages/Login';
 import Home from './pages/Home';
 import UserPage from './pages/UserPage';
 import LearnerPage from './pages/LearnerPage';
 import LearnerLogPage from './pages/LearnerLogPage';
 import LearnerPathsPage from './pages/LearnerPathsPage';
-import NotFound404 from './pages/NotFound404';
 
-import Loading from 'components/Loading';
 import CohortPage from './features/cohorts/components/CohortPage';
 import CohortsPage from './features/cohorts/components/CohortsPage';
 import AdminPage from './pages/AdminPage';
+
+import NotFound404 from './pages/NotFound404';
 
 @connect({ _currentUser: CurrentUser })
 class UserRoute extends Component {

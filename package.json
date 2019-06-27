@@ -149,9 +149,9 @@
       "^features/(.*)$": "<rootDir>/src/features/$1",
       "^api/(.*)$": "<rootDir>/src/api/$1",
       "^state/(.*)$": "<rootDir>/src/api/state/$1",
-      "^unstated-ext/(.*)$": "<rootDir>/src/api/unstated-ext/$1",
-      "^connect$": "<rootDir>/src/api/unstated-ext/connect",
-      "^NotLoaded$": "<rootDir>/src/api/unstated-ext/NotLoaded",
+      "^unstated-ext/(.*)$": "<rootDir>/src/unstated-ext/$1",
+      "^connect$": "<rootDir>/src/unstated-ext/connect",
+      "^NotLoaded$": "<rootDir>/src/unstated-ext/NotLoaded",
       "^components/(.*)$": "<rootDir>/src/components/$1",
       "^pages/(.*)$": "<rootDir>/src/pages/$1"
     },

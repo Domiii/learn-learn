@@ -1,9 +1,28 @@
-TODO: Elements of success?
+## Goal
+1. Develop specific "Program Modules" to aid people in their (very own journey) from different places A to specific places B
+
+## Modules
+* Programming/Engineering/CT...
+  1. Core (Hard skills)
+  1. Mindset (Soft skills, attitudes)
+  TODO: align a bit with CT definitions as they already laid some of the concepts out
+
+(Beginner/Intermediate/Advanced?)
 
 
-## Goals
+## Purpose
+1. "a meaningful and beautiful guide on your learning journey"
+  * https://www.youtube.com/watch?v=z3PpphdrEmU
 1. help user understand their own programming-related learner needs by their needs explicitely (questions and decision making)
 1. Provide choices and help visualize the different paths and possibilities for each user(?)
+
+## Features Brainstorming
+* Take a regular, short (audio or video) tape of yourself, reflecting your own learning
+  * TODO: why?
+* System questions support your creation thereof
+* end goal: analyze and scaffold your own learning
+
+
 
 ## More
 * learner logs
@@ -33,8 +52,9 @@ TODO: Elements of success?
 
 
 * sense of direction, choices, decisions
-* meaning and purpose
-  * "I chose to do this" vs. "they told me to so I did it"
+  * meaning and purpose
+  * "I chose to do this" vs. "they told me to so I did it" vs. "that's just how I do it"
+  * "you have a choice to go from auto-pilot to decision maker."
 
 * degree of difficulty?
 * head -> table?
@@ -55,7 +75,10 @@ TODO: Elements of success?
     * project practice (reverse engineering; build to spec; compare solutions)
     * project work (build your own thing)
 
-
+* real-world connection
+  * looking for job opportunities?
+  * competitions etc...
+  * your own dream project?
 
 * project list
   * https://github.com/ajayns/paper-todo

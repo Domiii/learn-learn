@@ -1,10 +1,6 @@
 import zipObject from 'lodash/zipObject';
-
-import { db } from 'api/firebase';
-
 import NotLoaded from 'NotLoaded';
 
-import { Container } from 'unstated';
 import FirestoreContainer from 'unstated-ext/FirestoreContainer';
 
 const EmptyArray = Object.freeze([]);
