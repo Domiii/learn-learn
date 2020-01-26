@@ -1,5 +1,9 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+### Current Status
+
+Just an idea; on ice for now :(
+
 ### Questions to ask: 
 * How am I doing?
     * energy level
